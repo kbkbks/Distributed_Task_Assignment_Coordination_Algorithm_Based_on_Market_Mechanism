@@ -1,0 +1,9 @@
+{
+    "C_Cpp.intelliSenseCacheSize": 0,
+    "files.associations": {
+        "iostream": "cpp",
+        "future": "cpp",
+        "chrono": "cpp"
+    },
+    "editor.fontSize": 16
+}

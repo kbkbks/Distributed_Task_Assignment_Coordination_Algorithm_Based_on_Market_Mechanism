@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "make build", // 任务名称，与launch.json的preLaunchTask相对应
+            "type":"shell" ,
+            "command": "cmake . & make", // 在shell中使用命令，如需加参数，可再添加args属性
+            //"group": {
+            //    "kind": "build",
+            //    "isDefault": true
+            //}
+        },
+            {
+                "label": "clean",
+               "type":"shell" ,
+               "command":"make clean"
+        }
+           
+        
+    ]
+}

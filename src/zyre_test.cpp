@@ -60,9 +60,6 @@ int main()
     cout << json_person.dump(4) << endl;
 
     cout << "TEST" << endl;
-
-    //test lenovo
-    cout << "lenovo" << endl;
 }
 
 

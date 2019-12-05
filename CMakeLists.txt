@@ -12,7 +12,9 @@ include_directories(
 #aux_source_directory(src DIR_SRCS)
 
 set(EXECUTABLE_OUTPUT_PATH bin)
-
+set(LIBRARY libzyre.so)
+set(LIBRARY libczmq.so)
+set(LIBRARY libzmq.so)
 #set(TestPath ${DIR_SRCS})
 
 add_executable(
@@ -20,7 +22,17 @@ add_executable(
     "${SOURCE_DIR}/src/main.cpp"
     "${SOURCE_DIR}/src/crobot.cpp"
     "${SOURCE_DIR}/src/ctasklist.cpp"
-    "${SOURCE_DIR}/src/ctaskpoint.cpp")
+    "${SOURCE_DIR}/src/ctaskpoint.cpp"
+)
 
 target_link_libraries(TargetOut pthread)
 #add_executable(MyCatchTest "${SOURCE_DIR}/src/MyCatchTest.cpp")
+#add_executable(ZYRE_TESTOUT "${SOURCE_DIR}/src/zyre_test.cpp")
+add_executable(ZYRE_JSON_SHOUTEROUT "${SOURCE_DIR}/src/zyre_json_shouter.cpp")
+add_executable(ZYRE_JSON_LISTENEROUT "${SOURCE_DIR}/src/zyre_json_listener.cpp")
+target_link_libraries(ZYRE_JSON_SHOUTEROUT zyre)
+target_link_libraries(ZYRE_JSON_SHOUTEROUT czmq)
+target_link_libraries(ZYRE_JSON_SHOUTEROUT zmq)
+target_link_libraries(ZYRE_JSON_LISTENEROUT zyre)
+target_link_libraries(ZYRE_JSON_LISTENEROUT czmq)
+target_link_libraries(ZYRE_JSON_LISTENEROUT zmq)

@@ -8,7 +8,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/ZYRE_JSON_LISTENEROUT",
+            "program": "${workspaceFolder}/bin/TargetOut",
             "args": [],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}",

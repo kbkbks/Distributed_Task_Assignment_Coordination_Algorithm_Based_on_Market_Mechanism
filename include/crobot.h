@@ -186,7 +186,13 @@ public:
      */
     int sendRobotNum();
 
+    /*
+     * 多机器人协调策略
+     */
+    void multirobotCoordination();
+
 private:
+    //常规任务分配变量
     float RobotLocation[2]; //机器人位置
     int Robot_No;   //机器人编号
     vector<float> ValueList;    //任务价值列表
@@ -199,11 +205,16 @@ private:
     vector<int> ResidualTask;   //剩余任务集，下标为任务序列
     int ResidualNum;    //剩余任务数量
 
+    //单机器人任务协调变量
     vector<TaskTemplate> TaskExecutionQueue;    //机器人任务执行队列
     vector<float> TaskExecutionQueueValue;  //任务执行队列价值
     int TaskExecutionQueueNum;  //任务执行队列中任务数量
     float maxValue; //价值最大的任务
     int maxValuePosition;   //价值最大的下标
+
+    //多机器人任务协调变量
+    int CoorCommunicateLength;  //协调通信长度
+    int CoorCommunicateTime;    //协调通信次数
 };
 
 

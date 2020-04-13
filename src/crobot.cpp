@@ -3,7 +3,7 @@
 /*
  * 构造函数
  */
-crobot::crobot():AllRobotPrice(ROBOTNUM), AllRobotBidder(ROBOTNUM), TaskExecutionQueueNum(0)
+crobot::crobot():AllRobotPrice(ROBOTNUM), AllRobotBidder(ROBOTNUM), TaskExecutionQueueNum(0), CoorCommunicateLength(0), CoorCommunicateTime(0)
 {
 
 }
@@ -98,6 +98,9 @@ void crobot::generateValueList(ctasklist * tasklist, int tasklist_num, float ran
     //将中标的任务存入机器人任务执行队列
     savetoTaskExecutionQueue(tasklist);
     TaskExecutionQueueNum = TaskExecutionQueue.size();
+
+    //多机器人任务协调策略（多线程单个机器人，完全分布式策略）
+
 
     /*
      * 以下整理剩余任务这部分代码从逻辑上讲应该归入主函数，在主线程中执行，不应该在子线程中执行，
@@ -2005,4 +2008,12 @@ void crobot::clearPropertity()
 int crobot::sendRobotNum()
 {
     return Robot_No;
+}
+
+/*
+ * 多机器人协调策略
+ */
+void multirobotCoordination()
+{
+
 }

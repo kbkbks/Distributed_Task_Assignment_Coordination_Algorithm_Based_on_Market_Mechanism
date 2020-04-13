@@ -1,5 +1,9 @@
 #include "crobot.h"
 
+//机器人协调读写子线程入口函数声明
+void writeTaskExecutionQueue(crobot * Robot);
+void readTaskExecutionQueue(crobot * Robot);
+
 /*
  * 构造函数
  */
@@ -99,8 +103,16 @@ void crobot::generateValueList(ctasklist * tasklist, int tasklist_num, float ran
     savetoTaskExecutionQueue(tasklist);
     TaskExecutionQueueNum = TaskExecutionQueue.size();
 
+    //将任务执行队列保存至全局变量，用于协调通信
+    //机器人异步读写线程，用于协调通信
+    //创建读写线程
+    thread RobotWriteThread(writeTaskExecutionQueue, this);
+    thread RobotReadThread(readTaskExecutionQueue, this);
+    RobotWriteThread.join();
+    RobotReadThread.join();
+
     //多机器人任务协调策略（多线程单个机器人，完全分布式策略）
-    multirobotCoordination();
+    multirobotCoordination(2);
 
     /*
      * 以下整理剩余任务这部分代码从逻辑上讲应该归入主函数，在主线程中执行，不应该在子线程中执行，
@@ -252,7 +264,7 @@ float crobot::sendTaskExecutionQueueValue()
 void crobot::bidding(int tasklist_num)
 {
     float NetMax = 0;   //重置最大净值
-    float NetSecMax = 0;    //重置次大净值
+    float NetSecMax = 0;    //重置次大净值StartTask
     vector<float> Net;  //净值
     float AssignedPrice = 0;    //机器人竞标任务增加的出价
 
@@ -1825,7 +1837,7 @@ void crobot::writePrice4(int tasklist_num)
  */
 void crobot::writePrice5(int tasklist_num)
 {
-   Mymutex5_4.lock();
+    Mymutex5_4.lock();
 
     //写入全局价格GlobalPrice5_4
     if (!GlobalPrice5_4.empty())
@@ -2013,7 +2025,84 @@ int crobot::sendRobotNum()
 /*
  * 多机器人协调策略
  */
-void crobot::multirobotCoordination()
+void crobot::multirobotCoordination(int CoorCommunicateLength)
 {
 
+}
+
+
+// /*
+//  * 设置任务执行队列
+//  */
+// void crobot::setTaskExecutionQueue()
+// {
+//     switch(Robot_No)
+//     {
+//     case 0: 
+//         writeTaskExecutionQueue0();
+
+
+//     default: 
+//         break;
+//     }
+// }
+
+// /*
+//  * 写全局任务执行队列，Robot[0]向Robot[1]写数据
+//  */
+// void crobot::writeTaskExecutionQueue0()
+// {
+//     TEQmutex0_1.lock();
+
+    
+
+//     TEQmutex0_1.unlock();
+// }
+
+// /*
+//  * 更新任务执行队列
+//  */
+// void crobot::updateTaskExecutionQueue()
+// {
+//     switch(Robot_No)
+//     {
+//     case 0: 
+//         readTaskExecutionQueue0();
+
+
+//     default: 
+//         break;
+//     }
+// }
+
+// /*
+//  * 读全局任务执行队列，Robot[0]向Robot[1]读数据
+//  */
+// void crobot::readTaskExecutionQueue0()
+// {
+//     TEQmutex0_1.lock();
+
+    
+
+//     TEQmutex0_1.unlock();
+// }
+
+/*
+ * 机器人读任务执行队列线程函数
+ */
+void readTaskExecutionQueue(crobot * Robot)
+{
+    cout << "机器人读TEQ子线程启动" << endl;
+    cout << "机器人编号：" << Robot->Robot_No << endl;
+    Robot->CoorCommunicateTime = 10;
+    cout << "机器人CoorCommunicateTime" << Robot->CoorCommunicateTime << endl;
+}
+
+/*
+ * 机器人写任务执行队列线程函数
+ */
+ void writeTaskExecutionQueue(crobot * Robot)
+{
+    cout << "机器人写TEQ子线程启动" << endl;
+    cout << "机器人编号：" << Robot->Robot_No << endl;
 }

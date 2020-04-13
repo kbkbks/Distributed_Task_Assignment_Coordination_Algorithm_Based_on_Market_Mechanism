@@ -189,7 +189,37 @@ public:
     /*
      * 多机器人协调策略
      */
-    void multirobotCoordination();
+    void multirobotCoordination(int CoorCommunicateLength);
+
+    // /*
+    //  * 设置任务执行队列
+    //  */
+    // void setTaskExecutionQueue();
+
+    // /*
+    //  * 写全局任务执行队列，Robot[0]向Robot[1]写数据
+    //  */
+    // void writeTaskExecutionQueue0();
+
+    // /*
+    //  * 更新任务执行队列
+    //  */
+    // void updateTaskExecutionQueue();
+
+    // /*
+    //  * 读全局任务执行队列，Robot[0]向Robot[1]读数据
+    //  */
+    // void readTaskExecutionQueue0();
+
+    /*
+     * 机器人读任务执行队列线程函数
+     */
+    friend void readTaskExecutionQueue(crobot * Robot);
+
+    /*
+     * 机器人写任务执行队列线程函数
+     */
+    friend void writeTaskExecutionQueue(crobot * Robot);
 
 private:
     //常规任务分配变量

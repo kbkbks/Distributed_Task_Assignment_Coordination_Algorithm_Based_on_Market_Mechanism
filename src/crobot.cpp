@@ -100,7 +100,7 @@ void crobot::generateValueList(ctasklist * tasklist, int tasklist_num, float ran
     TaskExecutionQueueNum = TaskExecutionQueue.size();
 
     //多机器人任务协调策略（多线程单个机器人，完全分布式策略）
-
+    multirobotCoordination();
 
     /*
      * 以下整理剩余任务这部分代码从逻辑上讲应该归入主函数，在主线程中执行，不应该在子线程中执行，
@@ -2013,7 +2013,7 @@ int crobot::sendRobotNum()
 /*
  * 多机器人协调策略
  */
-void multirobotCoordination()
+void crobot::multirobotCoordination()
 {
 
 }

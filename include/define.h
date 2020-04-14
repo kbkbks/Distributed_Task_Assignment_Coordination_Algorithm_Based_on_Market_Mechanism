@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <stdio.h>
+#include <unistd.h>
 #include <vector>
 #include <thread>
 #include <future>
@@ -15,7 +16,7 @@
 
 #define ROBOTNUM 6  //机器人数量
 #define TASKPOINT 8 //任务点数量
-#define TASKCAPACITY 5  //任务点任务容量
+#define TASKCAPACITY 1  //任务点任务容量
 #define RAND_NUM rand() / double(RAND_MAX) / 100 //随机数， 0～0.01
 
 using namespace std;
@@ -45,6 +46,38 @@ extern mutex Mymutex5_4;   //互斥量，Robot[5]向Robot[4]写，Robot[4]向Rob
 
 //多机器人协调互斥量
 extern mutex TEQmutex0_1;  //互斥量，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
+extern mutex TEQrw0_1; //互斥量，线程阻塞锁，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
+extern mutex TEQrw1_2; //互斥量，线程阻塞锁，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
+extern mutex TEQrw2_3; //互斥量，线程阻塞锁，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
+extern mutex TEQrw3_4; //互斥量，线程阻塞锁，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
+extern mutex TEQrw4_5; //互斥量，线程阻塞锁，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
+extern mutex TEQrw1_0; //互斥量，线程阻塞锁，Robot[1]向Robot[0]写，Robot[0]向Robot[1]读
+extern mutex TEQrw2_1; //互斥量，线程阻塞锁，Robot[2]向Robot[1]写，Robot[1]向Robot[2]读
+extern mutex TEQrw3_2; //互斥量，线程阻塞锁，Robot[3]向Robot[2]写，Robot[2]向Robot[3]读
+extern mutex TEQrw4_3; //互斥量，线程阻塞锁，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
+extern mutex TEQrw5_4; //互斥量，线程阻塞锁，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
+
+extern condition_variable conVAR0_1;   //条件变量，用于线程阻塞，Robot[0]进行协调，Robot[0]向Robot[1]交换任务
+extern condition_variable conVAR1_2;   //条件变量，用于线程阻塞，Robot[1]进行协调，Robot[1]向Robot[2]交换任务
+extern condition_variable conVAR2_3;   //条件变量，用于线程阻塞，Robot[2]进行协调，Robot[2]向Robot[3]交换任务
+extern condition_variable conVAR3_4;   //条件变量，用于线程阻塞，Robot[3]进行协调，Robot[3]向Robot[4]交换任务
+extern condition_variable conVAR4_5;   //条件变量，用于线程阻塞，Robot[4]进行协调，Robot[4]向Robot[5]交换任务
+extern condition_variable conVAR1_0;   //条件变量，用于线程阻塞，Robot[1]进行协调，Robot[1]向Robot[0]交换任务
+extern condition_variable conVAR2_1;   //条件变量，用于线程阻塞，Robot[2]进行协调，Robot[2]向Robot[1]交换任务
+extern condition_variable conVAR3_2;   //条件变量，用于线程阻塞，Robot[3]进行协调，Robot[3]向Robot[2]交换任务
+extern condition_variable conVAR4_3;   //条件变量，用于线程阻塞，Robot[4]进行协调，Robot[4]向Robot[3]交换任务
+extern condition_variable conVAR5_4;   //条件变量，用于线程阻塞，Robot[5]进行协调，Robot[5]向Robot[4]交换任务
+
+extern bool GloConFlag0_1; //全局标志，Robot[0]进行协调，Robot[0]向Robot[1]交换任务，Robot[1]任务执行队列已存入
+extern bool GloConFlag1_2; //全局标志，Robot[1]进行协调，Robot[1]向Robot[2]交换任务，Robot[2]任务执行队列已存入
+extern bool GloConFlag2_3; //全局标志，Robot[2]进行协调，Robot[2]向Robot[3]交换任务，Robot[3]任务执行队列已存入
+extern bool GloConFlag3_4; //全局标志，Robot[3]进行协调，Robot[3]向Robot[4]交换任务，Robot[4]任务执行队列已存入
+extern bool GloConFlag4_5; //全局标志，Robot[4]进行协调，Robot[4]向Robot[5]交换任务，Robot[5]任务执行队列已存入
+extern bool GloConFlag1_0; //全局标志，Robot[1]进行协调，Robot[1]向Robot[0]交换任务，Robot[0]任务执行队列已存入
+extern bool GloConFlag2_1; //全局标志，Robot[2]进行协调，Robot[2]向Robot[1]交换任务，Robot[1]任务执行队列已存入
+extern bool GloConFlag3_2; //全局标志，Robot[3]进行协调，Robot[3]向Robot[2]交换任务，Robot[2]任务执行队列已存入
+extern bool GloConFlag4_3; //全局标志，Robot[4]进行协调，Robot[4]向Robot[3]交换任务，Robot[3]任务执行队列已存入
+extern bool GloConFlag5_4; //全局标志，Robot[5]进行协调，Robot[5]向Robot[4]交换任务，Robot[4]任务执行队列已存入
 
 extern vector<float> GlobalPrice0_1;   //全局价格，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
 extern vector<float> GlobalPrice1_2;   //全局价格，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读

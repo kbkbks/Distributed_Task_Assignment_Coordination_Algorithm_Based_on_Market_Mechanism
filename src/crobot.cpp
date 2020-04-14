@@ -106,10 +106,12 @@ void crobot::generateValueList(ctasklist * tasklist, int tasklist_num, float ran
     //将任务执行队列保存至全局变量，用于协调通信
     //机器人异步读写线程，用于协调通信
     //创建读写线程
+    thread RobotReadThread(readTaskExecutionQueue, this); 
     thread RobotWriteThread(writeTaskExecutionQueue, this);
-    thread RobotReadThread(readTaskExecutionQueue, this);
-    RobotWriteThread.join();
+     
+    
     RobotReadThread.join();
+    RobotWriteThread.join();
 
     //多机器人任务协调策略（多线程单个机器人，完全分布式策略）
     multirobotCoordination(2);
@@ -2094,8 +2096,121 @@ void readTaskExecutionQueue(crobot * Robot)
 {
     cout << "机器人读TEQ子线程启动" << endl;
     cout << "机器人编号：" << Robot->Robot_No << endl;
-    Robot->CoorCommunicateTime = 10;
-    cout << "机器人CoorCommunicateTime" << Robot->CoorCommunicateTime << endl;
+    switch(Robot->Robot_No)
+    {
+    case 0:
+    {
+        //robot0向robot1进行协调，向robot[1]读数据
+        std::unique_lock<std::mutex> lck1_0(TEQrw1_0);
+        while(!GloConFlag0_1)
+        {
+            conVAR0_1.wait(lck1_0); 
+            cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
+        }   
+
+
+        //读函数
+        cout << "机器人" << Robot->Robot_No << "读完闭" << endl;
+
+        break;
+    }
+    case 1:
+    {
+        //robot1向robot0和robot2进行协调，向robot[0]和robot[2]读数据
+        std::unique_lock<std::mutex> lck0_1(TEQrw0_1);    
+        std::unique_lock<std::mutex> lck2_1(TEQrw2_1);
+        while(!GloConFlag1_0)
+        {
+            conVAR1_0.wait(lck0_1); 
+            cout << "机器人" << Robot->Robot_No << "阻塞" << endl;           
+        }
+        while(!GloConFlag1_2)
+        {
+            conVAR1_2.wait(lck2_1);  
+            cout << "机器人" << Robot->Robot_No << "阻塞" << endl;          
+        }
+
+        cout << "机器人" << Robot->Robot_No << "读完闭" << endl;
+        //读函数
+
+        break;
+    }
+    case 2:
+    {
+        //robot2向robot[1]和robot[3]进行协调，向robot[1]和robot[3]读数据
+        unique_lock<mutex> lck1_2(TEQrw1_2);
+        unique_lock<mutex> lck3_2(TEQrw3_2);
+        while(!GloConFlag2_1)
+        {
+            conVAR2_1.wait(lck1_2);
+            cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
+        }
+        while(!GloConFlag2_3)
+        {
+            conVAR2_3.wait(lck3_2);
+            cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
+        }
+
+        cout << "机器人" << Robot->Robot_No << "读完闭" << endl;
+        break;
+    }
+    case 3:
+    {
+        //robot3向robot[2]和robot[4]进行协调，向robot[2]和robot[4]读数据
+        unique_lock<mutex> lck2_3(TEQrw2_3);
+        unique_lock<mutex> lck4_3(TEQrw4_3);
+        while(!GloConFlag3_2)
+        {
+            conVAR3_2.wait(lck2_3);
+            cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
+        }
+        while(!GloConFlag3_4)
+        {
+            conVAR3_4.wait(lck4_3);
+            cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
+        }
+        cout << "机器人" << Robot->Robot_No << "读完闭" << endl;
+
+        break;
+    }
+    case 4:
+    {
+        //robot4向robot[3]和robot[5]进行协调，向robot[3]和robot[5]读数据
+        unique_lock<mutex> lck3_4(TEQrw3_4);
+        unique_lock<mutex> lck5_4(TEQrw5_4);
+        while(!GloConFlag4_3)
+        {
+            conVAR4_3.wait(lck3_4);
+            cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
+        }
+        while(!GloConFlag4_5)
+        {
+            conVAR4_5.wait(lck5_4);
+            cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
+        }
+
+        cout << "机器人" << Robot->Robot_No << "读完闭" << endl;
+
+        break;
+    }
+    case 5:
+    {
+        //robot5向robot[4]进行协调，向robot[4]读数据
+        std::unique_lock<std::mutex> lck4_5(TEQrw4_5);
+        while(!GloConFlag5_4)
+        {
+            conVAR5_4.wait(lck4_5); 
+            cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
+        } 
+
+        cout << "机器人" << Robot->Robot_No << "读完闭" << endl;
+
+        break;
+    }
+    default:
+        break;
+    }
+
 }
 
 /*
@@ -2105,4 +2220,86 @@ void readTaskExecutionQueue(crobot * Robot)
 {
     cout << "机器人写TEQ子线程启动" << endl;
     cout << "机器人编号：" << Robot->Robot_No << endl;
+
+    sleep(5);
+    switch(Robot->Robot_No)
+    {
+    case 0:
+    {  
+         //robot[0]向robot[1]写数据，robot[1]进行协调
+        unique_lock<mutex> lck0_1(TEQrw0_1);
+        conVAR1_0.notify_all();
+        GloConFlag1_0 = true;
+
+        //写函数
+
+
+        break;       
+    }
+    case 1:
+    {
+        //robot[1]向robot[0]和robot[2]写数据，robot[0]和robot[2]进行协调
+        unique_lock<mutex> lck1_0(TEQrw1_0);
+        unique_lock<mutex> lck1_2(TEQrw1_2);
+        conVAR0_1.notify_all();
+        GloConFlag0_1 = true;
+        conVAR2_1.notify_all();
+        GloConFlag2_1 = true;
+        //写函数
+
+
+        break;
+    }
+    case 2:
+    {
+        //robot[2]向robot[1]和robot[3]写数据，robot[1]和robot[3]进行协调
+        unique_lock<mutex> lck2_1(TEQrw2_1);
+        unique_lock<mutex> lck2_3(TEQrw2_3);
+        conVAR1_2.notify_all();
+        GloConFlag1_2 = true;
+        conVAR3_2.notify_all();
+        GloConFlag3_2 = true;
+        //写函数
+
+
+        break;
+    }
+    case 3:
+    {
+        //robot3向robot[2]和robot[4]写数据，robot[2]和robot[4]进行协调
+        unique_lock<mutex> lck3_2(TEQrw3_2);
+        unique_lock<mutex> lck3_4(TEQrw3_4);
+        conVAR2_3.notify_all();
+        GloConFlag2_3 = true;
+        conVAR4_3.notify_all();
+        GloConFlag4_3 = true;
+
+        break;
+    }
+    case 4:
+    {
+        //robot4向robot[3]和robot[5]写数据，robot[3]和robot[5]进行协调
+        unique_lock<mutex> lck4_3(TEQrw4_3);
+        unique_lock<mutex> lck4_5(TEQrw4_5);
+        conVAR3_4.notify_all();
+        GloConFlag3_4 = true;
+        conVAR5_4.notify_all();
+        GloConFlag5_4 = true;
+
+        break;
+    }
+    case 5:
+    {
+        //robot5向robot[4]写数据，robot[4]进行协调
+        unique_lock<mutex> lck5_4(TEQrw5_4);
+        conVAR4_5.notify_all();
+        GloConFlag4_5 = true;   
+
+
+        break;    
+    }
+    default:
+        break;
+    }
+
 }

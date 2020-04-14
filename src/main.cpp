@@ -41,6 +41,38 @@ mutex Mymutex5_4;   //互斥量，Robot[5]向Robot[4]写，Robot[4]向Robot[5]�
 
 //多机器人协调互斥量
 mutex TEQmutex0_1;  //互斥量，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
+mutex TEQrw0_1; //互斥量，线程阻塞锁，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
+mutex TEQrw1_2; //互斥量，线程阻塞锁，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
+mutex TEQrw2_3; //互斥量，线程阻塞锁，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
+mutex TEQrw3_4; //互斥量，线程阻塞锁，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
+mutex TEQrw4_5; //互斥量，线程阻塞锁，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
+mutex TEQrw1_0; //互斥量，线程阻塞锁，Robot[1]向Robot[0]写，Robot[0]向Robot[1]读
+mutex TEQrw2_1; //互斥量，线程阻塞锁，Robot[2]向Robot[1]写，Robot[1]向Robot[2]读
+mutex TEQrw3_2; //互斥量，线程阻塞锁，Robot[3]向Robot[2]写，Robot[2]向Robot[3]读
+mutex TEQrw4_3; //互斥量，线程阻塞锁，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
+mutex TEQrw5_4; //互斥量，线程阻塞锁，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
+
+condition_variable conVAR0_1;   //条件变量，用于线程阻塞，Robot[0]进行协调，Robot[0]向Robot[1]交换任务
+condition_variable conVAR1_2;   //条件变量，用于线程阻塞，Robot[1]进行协调，Robot[1]向Robot[2]交换任务
+condition_variable conVAR2_3;   //条件变量，用于线程阻塞，Robot[2]进行协调，Robot[2]向Robot[3]交换任务
+condition_variable conVAR3_4;   //条件变量，用于线程阻塞，Robot[3]进行协调，Robot[3]向Robot[4]交换任务
+condition_variable conVAR4_5;   //条件变量，用于线程阻塞，Robot[4]进行协调，Robot[4]向Robot[5]交换任务
+condition_variable conVAR1_0;   //条件变量，用于线程阻塞，Robot[1]进行协调，Robot[1]向Robot[0]交换任务
+condition_variable conVAR2_1;   //条件变量，用于线程阻塞，Robot[2]进行协调，Robot[2]向Robot[1]交换任务
+condition_variable conVAR3_2;   //条件变量，用于线程阻塞，Robot[3]进行协调，Robot[3]向Robot[2]交换任务
+condition_variable conVAR4_3;   //条件变量，用于线程阻塞，Robot[4]进行协调，Robot[4]向Robot[3]交换任务
+condition_variable conVAR5_4;   //条件变量，用于线程阻塞，Robot[5]进行协调，Robot[5]向Robot[4]交换任务
+
+bool GloConFlag0_1 = false; //全局标志，Robot[0]进行协调，Robot[0]向Robot[1]交换任务，Robot[1]任务执行队列已存入
+bool GloConFlag1_2 = false; //全局标志，Robot[1]进行协调，Robot[1]向Robot[2]交换任务，Robot[2]任务执行队列已存入
+bool GloConFlag2_3 = false; //全局标志，Robot[2]进行协调，Robot[2]向Robot[3]交换任务，Robot[3]任务执行队列已存入
+bool GloConFlag3_4 = false; //全局标志，Robot[3]进行协调，Robot[3]向Robot[4]交换任务，Robot[4]任务执行队列已存入
+bool GloConFlag4_5 = false; //全局标志，Robot[4]进行协调，Robot[4]向Robot[5]交换任务，Robot[5]任务执行队列已存入
+bool GloConFlag1_0 = false; //全局标志，Robot[1]进行协调，Robot[1]向Robot[0]交换任务，Robot[0]任务执行队列已存入
+bool GloConFlag2_1 = false; //全局标志，Robot[2]进行协调，Robot[2]向Robot[1]交换任务，Robot[1]任务执行队列已存入
+bool GloConFlag3_2 = false; //全局标志，Robot[3]进行协调，Robot[3]向Robot[2]交换任务，Robot[2]任务执行队列已存入
+bool GloConFlag4_3 = false; //全局标志，Robot[4]进行协调，Robot[4]向Robot[3]交换任务，Robot[3]任务执行队列已存入
+bool GloConFlag5_4 = false; //全局标志，Robot[5]进行协调，Robot[5]向Robot[4]交换任务，Robot[4]任务执行队列已存入
 
 vector<TaskTemplate> GlobalTEQ0_1;  //全局任务执行队列，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
 

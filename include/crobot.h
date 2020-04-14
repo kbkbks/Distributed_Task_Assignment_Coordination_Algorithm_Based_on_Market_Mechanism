@@ -191,25 +191,20 @@ public:
      */
     void multirobotCoordination(int CoorCommunicateLength);
 
-    // /*
-    //  * 设置任务执行队列
-    //  */
-    // void setTaskExecutionQueue();
+    /*
+     * 设置任务执行队列
+     */
+    vector<TaskTemplate> setTaskExecutionQueue();
 
-    // /*
-    //  * 写全局任务执行队列，Robot[0]向Robot[1]写数据
-    //  */
-    // void writeTaskExecutionQueue0();
+    /*
+     * 设置机器人CoorTEQ个数（通信范围），这里为邻接机器人，即为2
+     */
+    void setCoorTEQWidth(int CoorCommunicateWidth);
 
-    // /*
-    //  * 更新任务执行队列
-    //  */
-    // void updateTaskExecutionQueue();
-
-    // /*
-    //  * 读全局任务执行队列，Robot[0]向Robot[1]读数据
-    //  */
-    // void readTaskExecutionQueue0();
+    /*
+     * 更新任务执行队列
+     */
+    vector<TaskTemplate> updateTaskExecutionQueue(vector<TaskTemplate> GlobalTEQ, int coor_num);
 
     /*
      * 机器人读任务执行队列线程函数
@@ -245,6 +240,8 @@ private:
     //多机器人任务协调变量
     int CoorCommunicateLength;  //协调通信长度
     int CoorCommunicateTime;    //协调通信次数
+    int CoorCommunicateWidth;   //协调通信范围，这里为邻接机器人，即为2
+    vector<TaskTemplate> * CoorTEQ; //协调对象任务执行队列数组，下标表示不同协调对象的TEQ
 };
 
 

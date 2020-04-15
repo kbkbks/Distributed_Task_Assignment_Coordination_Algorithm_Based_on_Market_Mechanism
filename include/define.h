@@ -13,6 +13,8 @@
 #include <sys/time.h>
 #include <chrono>
 #include <algorithm>
+#include <pthread.h>
+#include <sys/syscall.h>
 
 #define ROBOTNUM 6  //机器人数量
 #define TASKPOINT 8 //任务点数量

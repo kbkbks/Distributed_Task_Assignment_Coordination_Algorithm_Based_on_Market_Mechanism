@@ -202,9 +202,14 @@ public:
     void setCoorTEQWidth(int CoorCommunicateWidth);
 
     /*
+     * 回收CoorTEQWidth内存
+     */
+    void deleteCoorTEQWidth();
+
+    /*
      * 更新任务执行队列
      */
-    vector<TaskTemplate> updateTaskExecutionQueue(vector<TaskTemplate> GlobalTEQ, int coor_num);
+    void updateTaskExecutionQueue(vector<TaskTemplate> GlobalTEQ, int coor_num);
 
     /*
      * 机器人读任务执行队列线程函数
@@ -215,6 +220,11 @@ public:
      * 机器人写任务执行队列线程函数
      */
     friend void writeTaskExecutionQueue(crobot * Robot);
+
+    /*
+     * 计算机器人任务协调效用
+     */
+    void calTaskCoorUtility();
 
 private:
     //常规任务分配变量
@@ -242,6 +252,7 @@ private:
     int CoorCommunicateTime;    //协调通信次数
     int CoorCommunicateWidth;   //协调通信范围，这里为邻接机器人，即为2
     vector<TaskTemplate> * CoorTEQ; //协调对象任务执行队列数组，下标表示不同协调对象的TEQ
+    
 };
 
 

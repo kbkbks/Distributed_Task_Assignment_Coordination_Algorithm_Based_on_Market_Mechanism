@@ -113,7 +113,7 @@ void crobot::generateValueList(ctasklist * tasklist, int tasklist_num, float ran
     RobotWriteThread.join();
 
     //多机器人任务协调策略（多线程单个机器人，完全分布式策略）
-    //multirobotCoordination(2);
+    multirobotCoordination(2);
 
     //回收CoorTEQWidth内存
     deleteCoorTEQWidth();
@@ -2298,6 +2298,7 @@ void crobot::multirobotCoordination(int CoorCommunicateLength)
     if(CoorTEQ[0].size() >= CoorCommunicateLength)
     {
         //计算机器人任务协调效用（任务协调长度内）
+        cout << "协调对象任务执行队列长度为" << CoorTEQ[0].size() << endl;
     }
     else
     {

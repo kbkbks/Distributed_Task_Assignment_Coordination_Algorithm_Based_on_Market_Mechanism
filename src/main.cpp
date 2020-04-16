@@ -226,6 +226,28 @@ void clearGlobalVar()
         GlobalAllRobotBidder4_3[i].clear();
         GlobalAllRobotBidder5_4[i].clear();
     }
+    
+    GlobalTEQ1_0.clear();
+    GlobalTEQ2_1.clear();
+    GlobalTEQ3_2.clear();
+    GlobalTEQ4_3.clear();
+    GlobalTEQ5_4.clear();
+    GlobalTEQ0_1.clear();
+    GlobalTEQ1_2.clear();
+    GlobalTEQ2_3.clear();
+    GlobalTEQ3_4.clear();
+    GlobalTEQ4_5.clear();
+
+    GloConFlag0_1 = false;
+    GloConFlag1_2 = false;
+    GloConFlag2_3 = false;
+    GloConFlag3_4 = false;
+    GloConFlag4_5 = false;
+    GloConFlag1_0 = false;
+    GloConFlag2_1 = false;
+    GloConFlag3_2 = false;
+    GloConFlag4_3 = false;
+    GloConFlag5_4 = false;
 }
 
 int main()

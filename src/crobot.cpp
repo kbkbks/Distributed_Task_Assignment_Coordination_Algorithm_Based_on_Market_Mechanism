@@ -1,4 +1,5 @@
 #include "crobot.h"
+#include "cmultirobotCoordinate.h"
 
 //机器人协调读写子线程入口函数声明
 void writeTaskExecutionQueue(crobot * Robot);
@@ -113,7 +114,7 @@ void crobot::generateValueList(ctasklist * tasklist, int tasklist_num, float ran
     RobotWriteThread.join();
 
     //多机器人任务协调策略（多线程单个机器人，完全分布式策略）
-    multirobotCoordination(2);
+    multirobotCoordination(5);
 
     //回收CoorTEQWidth内存
     deleteCoorTEQWidth();
@@ -2031,8 +2032,8 @@ int crobot::sendRobotNum()
  */
 void readTaskExecutionQueue(crobot * Robot)
 {
-    cout << "机器人读TEQ子线程启动" << "线程ID：" << syscall(SYS_gettid) << endl;
-    cout << "机器人编号：" << Robot->Robot_No << endl;
+    //cout << "机器人读TEQ子线程启动" << "线程ID：" << syscall(SYS_gettid) << endl;
+    //cout << "机器人编号：" << Robot->Robot_No << endl;
     //Robot->setCoorTEQWidth(Robot->CoorCommunicateWidth);    //设置机器人协调通信范围，这里为邻接机器人，即2
 
     switch(Robot->Robot_No)
@@ -2044,11 +2045,11 @@ void readTaskExecutionQueue(crobot * Robot)
         while(!GloConFlag0_1)
         {
             conVAR0_1.wait(lck1_0); 
-            cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
+            //cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
         }
         Robot->updateTaskExecutionQueue(GlobalTEQ1_0, 0);   //读函数
         
-        cout << "机器人" << Robot->Robot_No << "读完闭" << endl;
+        //cout << "机器人" << Robot->Robot_No << "读完闭" << endl;
 
         break;
     }
@@ -2060,18 +2061,18 @@ void readTaskExecutionQueue(crobot * Robot)
         while(!GloConFlag1_0)
         {
             conVAR1_0.wait(lck0_1); 
-            cout << "机器人" << Robot->Robot_No << "阻塞" << endl;           
+            //cout << "机器人" << Robot->Robot_No << "阻塞" << endl;           
         }
         Robot->updateTaskExecutionQueue(GlobalTEQ0_1, 0);   //读函数
-        cout << "机器人" << Robot->Robot_No << "读一半" << endl;
+        //cout << "机器人" << Robot->Robot_No << "读一半" << endl;
         while(!GloConFlag1_2)
         {
             conVAR1_2.wait(lck2_1);  
-            cout << "机器人" << Robot->Robot_No << "阻塞" << endl;          
+            //cout << "机器人" << Robot->Robot_No << "阻塞" << endl;          
         }
         Robot->updateTaskExecutionQueue(GlobalTEQ2_1, 1);   //读函数
 
-        cout << "机器人" << Robot->Robot_No << "读完闭" << endl;
+        //cout << "机器人" << Robot->Robot_No << "读完闭" << endl;
 
         break;
     }
@@ -2083,18 +2084,18 @@ void readTaskExecutionQueue(crobot * Robot)
         while(!GloConFlag2_1)
         {
             conVAR2_1.wait(lck1_2);
-            cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
+            //cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
         }
         Robot->updateTaskExecutionQueue(GlobalTEQ1_2, 0);   //读函数
-        cout << "机器人" << Robot->Robot_No << "读一半" << endl;
+        //cout << "机器人" << Robot->Robot_No << "读一半" << endl;
         while(!GloConFlag2_3)
         {
             conVAR2_3.wait(lck3_2);
-            cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
+            //cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
         }
         Robot->updateTaskExecutionQueue(GlobalTEQ3_2, 1);   //读函数
 
-        cout << "机器人" << Robot->Robot_No << "读完闭" << endl;
+        //cout << "机器人" << Robot->Robot_No << "读完闭" << endl;
         break;
     }
     case 3:
@@ -2105,18 +2106,18 @@ void readTaskExecutionQueue(crobot * Robot)
         while(!GloConFlag3_2)
         {
             conVAR3_2.wait(lck2_3);
-            cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
+            //cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
         }
         Robot->updateTaskExecutionQueue(GlobalTEQ2_3, 0);   //读函数
-        cout << "机器人" << Robot->Robot_No << "读一半" << endl;        
+        //cout << "机器人" << Robot->Robot_No << "读一半" << endl;        
         while(!GloConFlag3_4)
         {
             conVAR3_4.wait(lck4_3);
-            cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
+            //cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
         }
         Robot->updateTaskExecutionQueue(GlobalTEQ4_3, 1);   //读函数
 
-        cout << "机器人" << Robot->Robot_No << "读完闭" << endl;
+        //cout << "机器人" << Robot->Robot_No << "读完闭" << endl;
 
         break;
     }
@@ -2128,18 +2129,18 @@ void readTaskExecutionQueue(crobot * Robot)
         while(!GloConFlag4_3)
         {
             conVAR4_3.wait(lck3_4);
-            cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
+            //cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
         }
         Robot->updateTaskExecutionQueue(GlobalTEQ3_4, 0);   //读函数
-        cout << "机器人" << Robot->Robot_No << "读一半" << endl;
+        //cout << "机器人" << Robot->Robot_No << "读一半" << endl;
         while(!GloConFlag4_5)
         {
             conVAR4_5.wait(lck5_4);
-            cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
+            //cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
         }
         Robot->updateTaskExecutionQueue(GlobalTEQ5_4, 1);   //读函数
 
-        cout << "机器人" << Robot->Robot_No << "读完闭" << endl;
+        //cout << "机器人" << Robot->Robot_No << "读完闭" << endl;
 
         break;
     }
@@ -2150,11 +2151,11 @@ void readTaskExecutionQueue(crobot * Robot)
         while(!GloConFlag5_4)
         {
             conVAR5_4.wait(lck4_5); 
-            cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
+            //cout << "机器人" << Robot->Robot_No << "阻塞" << endl;
         } 
         Robot->updateTaskExecutionQueue(GlobalTEQ4_5, 0);   //读函数
 
-        cout << "机器人" << Robot->Robot_No << "读完闭" << endl;
+        //cout << "机器人" << Robot->Robot_No << "读完闭" << endl;
 
         break;
     }
@@ -2169,8 +2170,8 @@ void readTaskExecutionQueue(crobot * Robot)
  */
  void writeTaskExecutionQueue(crobot * Robot)
 {
-    cout << "机器人写TEQ子线程启动" << "线程ID：" << syscall(SYS_gettid) << endl;
-    cout << "机器人编号：" << Robot->Robot_No << endl;
+    //cout << "机器人写TEQ子线程启动" << "线程ID：" << syscall(SYS_gettid) << endl;
+    //cout << "机器人编号：" << Robot->Robot_No << endl;
 
     //sleep(5);
     switch(Robot->Robot_No)
@@ -2295,22 +2296,21 @@ void crobot::updateTaskExecutionQueue(vector<TaskTemplate> GlobalTEQ, int coor_n
 void crobot::multirobotCoordination(int CoorCommunicateLength)
 {
     //计算机器人原始效用（任务协调长度内）
-    if(CoorTEQ[0].size() >= CoorCommunicateLength)
+
+    //按顺序对每一个协调对象进行任务协调
+    int CoorTaskNum = CoorTEQ[0].size();
+    if(CoorTaskNum > CoorCommunicateLength + 1)
+    //协调对象任务数需至少为通信协调长度+1，如若CoorCommunicateLength为2，CoorTEQ[0]长度至少为4，才能满足任务协调效用的计算
     {
         //计算机器人任务协调效用（任务协调长度内）
-        cout << "协调对象任务执行队列长度为" << CoorTEQ[0].size() << endl;
+        cout << "协调对象任务执行队列长度为" << CoorTaskNum << endl;
+
+        cmultirobotCoordinate MulriRobotCoordinate(CoorTEQ[0], TaskExecutionQueue, CoorCommunicateLength, Robot_No);
+        MulriRobotCoordinate.taskCoordinate();
     }
     else
     {
         //机器人不进行任务协调
         cout << "协调对象任务执行队列小于协调长度，不进行协调！" << endl;
     }
-}
-
-/*
- * 计算机器人任务协调效用
- */
-void crobot::calTaskCoorUtility()
-{
-
 }

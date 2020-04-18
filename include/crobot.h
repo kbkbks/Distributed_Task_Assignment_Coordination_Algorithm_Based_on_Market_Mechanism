@@ -224,7 +224,7 @@ public:
     /*
      * 计算机器人任务协调效用
      */
-    void calTaskCoorUtility();
+    float calTaskCoorUtility();
 
 private:
     //常规任务分配变量

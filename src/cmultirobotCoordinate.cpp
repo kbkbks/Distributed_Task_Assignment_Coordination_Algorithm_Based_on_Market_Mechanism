@@ -3,8 +3,8 @@
 /*
  * 构造函数
  */
-cmultirobotCoordinate::cmultirobotCoordinate(vector<TaskTemplate> tmpCoorTEQ, vector<TaskTemplate> currentQueue, int coorLength, int robot_no) : 
-CoorTEQ(tmpCoorTEQ), CurrentQueue(currentQueue), CoorLength(coorLength), Robot_No(robot_no)
+cmultirobotCoordinate::cmultirobotCoordinate(vector<TaskTemplate> coorTEQ, vector<TaskTemplate> currentTEQ, int coorLength, int robot_no) : 
+CoorTEQ(coorTEQ), CurrentTEQ(currentTEQ), CoorLength(coorLength), Robot_No(robot_no)
 {
     CoordinateTask = -1;
     MaxTaskCoorValue = 0;
@@ -15,19 +15,23 @@ CoorTEQ(tmpCoorTEQ), CurrentQueue(currentQueue), CoorLength(coorLength), Robot_N
  */
 void cmultirobotCoordinate::taskCoordinate()
 {
-    MaxTaskCoorValue = calTaskCoorUtility(CoorTEQ) + calTaskCoorCurrentUtility(CurrentQueue);
+    MaxTaskCoorValue = calTaskCoorUtility(CoorTEQ) + calTaskCurrentUtility(CurrentTEQ);
     for(int i = 1; i <= CoorLength; ++i)
     {
         vector<TaskTemplate> tmpCoorTEQ = CoorTEQ;
-        vector<TaskTemplate> tmpCurrentTEQ = CurrentQueue;
+        vector<TaskTemplate> tmpCurrentTEQ = CurrentTEQ;
         TaskTemplate tmpTask = *(tmpCoorTEQ.end() - 1 - i);
-        *(tmpCoorTEQ.end() - 1 - i) = *(CurrentQueue.end() - 1);
+        *(tmpCoorTEQ.end() - 1 - i) = *(CurrentTEQ.end() - 1);
         *(tmpCurrentTEQ.end() - 1) = tmpTask;
-        float TaskCoorValue = calTaskCoorUtility(tmpCoorTEQ) + calTaskCoorCurrentUtility(tmpCurrentTEQ);
+        float TaskCoorValue = calTaskCoorUtility(tmpCoorTEQ) + calTaskCurrentUtility(tmpCurrentTEQ);
         if (TaskCoorValue > MaxTaskCoorValue)
         {
             MaxTaskCoorValue = TaskCoorValue;
-            CoordinateTask = i;
+            CoordinateTask = i; //记录协调任务序号
+
+            //存储新的任务队列
+            NewCoorTEQ = tmpCoorTEQ;
+            NewCurrentTEQ = tmpCurrentTEQ;
         }
     }
 
@@ -68,9 +72,9 @@ float cmultirobotCoordinate::calTaskCoorUtility(vector<TaskTemplate> tmpCoorTEQ)
 /*
  * 计算机器人任务协调效用(当前机器人)
  */
-float cmultirobotCoordinate::calTaskCoorCurrentUtility(vector<TaskTemplate> tmpCoorCurrentTEQ)
+float cmultirobotCoordinate::calTaskCurrentUtility(vector<TaskTemplate> tmpCurrentTEQ)
 {
-    vector<TaskTemplate> tmp = tmpCoorCurrentTEQ;
+    vector<TaskTemplate> tmp = tmpCurrentTEQ;
     float CoorValue = sqrt(pow((tmp.end() - 2) -> EndPoint[0] - (tmp.end() - 1) -> BeginPoint[0], 2) + 
             pow((tmp.end() - 2) -> EndPoint[1] - (tmp.end() - 1) -> BeginPoint[1], 2)) + 
             sqrt(pow((tmp.end() - 1) -> EndPoint[0] - (tmp.end() - 1) -> BeginPoint[0], 2) +
@@ -78,4 +82,34 @@ float cmultirobotCoordinate::calTaskCoorCurrentUtility(vector<TaskTemplate> tmpC
 
     float result = 1 / CoorValue;
     return result;
+}
+
+/*
+ * 返回协调后的协调对象任务队列
+ */
+vector<TaskTemplate> cmultirobotCoordinate::sendNewCoorTEQ()
+{
+    if(CoordinateTask != -1)
+    {
+        return NewCoorTEQ;       
+    }
+    else
+    {
+        return CoorTEQ;
+    }
+}
+
+/*
+ * 返回协调后的当前任务队列
+ */
+vector<TaskTemplate> cmultirobotCoordinate::sendNewCurrentTEQ()
+{
+    if(CoordinateTask != -1)
+    {
+        return NewCurrentTEQ;        
+    }
+    else
+    {
+        return CurrentTEQ;
+    }
 }

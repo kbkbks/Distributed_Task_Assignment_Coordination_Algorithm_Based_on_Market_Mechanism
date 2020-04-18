@@ -2298,19 +2298,32 @@ void crobot::multirobotCoordination(int CoorCommunicateLength)
     //计算机器人原始效用（任务协调长度内）
 
     //按顺序对每一个协调对象进行任务协调
-    int CoorTaskNum = CoorTEQ[0].size();
-    if(CoorTaskNum > CoorCommunicateLength + 1)
+    int CoorTaskNum_0 = CoorTEQ[0].size();
+    if(CoorTaskNum_0 > CoorCommunicateLength + 1)
     //协调对象任务数需至少为通信协调长度+1，如若CoorCommunicateLength为2，CoorTEQ[0]长度至少为4，才能满足任务协调效用的计算
     {
         //计算机器人任务协调效用（任务协调长度内）
-        cout << "协调对象任务执行队列长度为" << CoorTaskNum << endl;
+        cout << "第一次协调对象任务执行队列长度为" << CoorTaskNum_0 << endl;
 
-        cmultirobotCoordinate MulriRobotCoordinate(CoorTEQ[0], TaskExecutionQueue, CoorCommunicateLength, Robot_No);
-        MulriRobotCoordinate.taskCoordinate();
+        cmultirobotCoordinate MulriRobotCoordinate0(CoorTEQ[0], TaskExecutionQueue, CoorCommunicateLength, Robot_No);
+        MulriRobotCoordinate0.taskCoordinate();
+        //MulriRobotCoordinate0.sendNewCoorTEQ();
+        TaskExecutionQueue = MulriRobotCoordinate0.sendNewCurrentTEQ();
     }
     else
     {
         //机器人不进行任务协调
         cout << "协调对象任务执行队列小于协调长度，不进行协调！" << endl;
+    }
+
+    int CoorTaskNum_1 = CoorTEQ[1].size();
+    if(CoorTaskNum_1 > CoorCommunicateLength + 1)
+    {
+        cout << "第二次协调对象任务执行队列长度为" << CoorTaskNum_1 << endl;
+
+        cmultirobotCoordinate MulriRobotCoordinate1(CoorTEQ[1], TaskExecutionQueue, CoorCommunicateLength, Robot_No);
+        MulriRobotCoordinate1.taskCoordinate();
+        //MulriRobotCoordinate0.sendNewCoorTEQ();
+        TaskExecutionQueue = MulriRobotCoordinate1.sendNewCurrentTEQ();
     }
 }

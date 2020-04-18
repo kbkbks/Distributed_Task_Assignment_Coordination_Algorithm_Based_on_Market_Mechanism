@@ -114,7 +114,7 @@ void crobot::generateValueList(ctasklist * tasklist, int tasklist_num, float ran
     RobotWriteThread.join();
 
     //多机器人任务协调策略（多线程单个机器人，完全分布式策略）
-    multirobotCoordination(5);
+    multirobotCoordination(3);
 
     //回收CoorTEQWidth内存
     deleteCoorTEQWidth();

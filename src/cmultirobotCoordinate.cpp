@@ -30,7 +30,16 @@ void cmultirobotCoordinate::taskCoordinate()
             CoordinateTask = i;
         }
     }
-    cout << "协调的任务序号" << CoordinateTask << endl;        
+
+    if (CoordinateTask != -1)
+    {
+        cout << "机器人:" << Robot_No << "协调的任务序号:" << CoordinateTask << endl;         
+    }
+    else
+    {
+        cout << "机器人:" << Robot_No << "不进行协调" << endl;
+    }
+       
 }
 
 /*

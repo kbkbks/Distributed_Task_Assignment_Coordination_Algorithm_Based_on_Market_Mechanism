@@ -23,6 +23,7 @@ add_executable(
     "${SOURCE_DIR}/src/crobot.cpp"
     "${SOURCE_DIR}/src/ctasklist.cpp"
     "${SOURCE_DIR}/src/ctaskpoint.cpp"
+    "${SOURCE_DIR}/src/cmultirobotCoordinate.cpp"
 )
 
 target_link_libraries(TargetOut pthread)

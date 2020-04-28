@@ -1,5 +1,6 @@
 #include "crobot.h"
 #include "cmultirobotCoordinate.h"
+#include "ccoordinatecommunication.h"
 
 //机器人协调读写子线程入口函数声明
 void writeTaskExecutionQueue(crobot * Robot);
@@ -112,6 +113,10 @@ void crobot::generateValueList(ctasklist * tasklist, int tasklist_num, float ran
     thread RobotWriteThread(writeTaskExecutionQueue, this);
     RobotReadThread.join();
     RobotWriteThread.join();
+
+    //机器人协调通信类，用于进入协调过程
+    ccoordinatecommunication CoordinateCommunication(this);
+    CoordinateCommunication.enterCoordinate();
 
     //多机器人任务协调策略（多线程单个机器人，完全分布式策略）
     multirobotCoordination(3);
@@ -2295,8 +2300,6 @@ void crobot::updateTaskExecutionQueue(vector<TaskTemplate> GlobalTEQ, int coor_n
  */
 void crobot::multirobotCoordination(int CoorCommunicateLength)
 {
-    //计算机器人原始效用（任务协调长度内）
-
     //按顺序对每一个协调对象进行任务协调
     int CoorTaskNum_0 = CoorTEQ[0].size();
     if(CoorTaskNum_0 > CoorCommunicateLength + 1)

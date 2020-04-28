@@ -40,7 +40,7 @@ mutex Mymutex3_2;   //互斥量，Robot[3]向Robot[2]写，Robot[2]向Robot[3]�
 mutex Mymutex4_3;   //互斥量，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
 mutex Mymutex5_4;   //互斥量，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
 
-//多机器人协调互斥量
+//多机器人协调读写互斥量
 mutex TEQrw0_1; //互斥量，线程阻塞锁，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
 mutex TEQrw1_2; //互斥量，线程阻塞锁，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
 mutex TEQrw2_3; //互斥量，线程阻塞锁，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
@@ -51,6 +51,9 @@ mutex TEQrw2_1; //互斥量，线程阻塞锁，Robot[2]向Robot[1]写，Robot[1
 mutex TEQrw3_2; //互斥量，线程阻塞锁，Robot[3]向Robot[2]写，Robot[2]向Robot[3]读
 mutex TEQrw4_3; //互斥量，线程阻塞锁，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
 mutex TEQrw5_4; //互斥量，线程阻塞锁，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
+
+//多机器人协调状态互斥量
+mutex muCoorStatus; //互斥量，协调状态CoorStatus读写
 
 //多机器人协调条件变量
 condition_variable conVAR0_1;   //条件变量，用于线程阻塞，Robot[0]进行协调，Robot[0]向Robot[1]交换任务
@@ -75,6 +78,9 @@ bool GloConFlag2_1 = false; //全局标志，Robot[2]进行协调，Robot[2]向R
 bool GloConFlag3_2 = false; //全局标志，Robot[3]进行协调，Robot[3]向Robot[2]交换任务，Robot[2]任务执行队列已存入
 bool GloConFlag4_3 = false; //全局标志，Robot[4]进行协调，Robot[4]向Robot[3]交换任务，Robot[3]任务执行队列已存入
 bool GloConFlag5_4 = false; //全局标志，Robot[5]进行协调，Robot[5]向Robot[4]交换任务，Robot[4]任务执行队列已存入
+
+//多机器人协调全局协调状态
+vector<bool> GlobalCoorStatus;  //全局协调状态
 
 //竞拍算法全局任务执行队列
 vector<TaskTemplate> GlobalTEQ0_1;  //全局任务执行队列，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
@@ -181,6 +187,12 @@ void setGlobalInitialValue(int tasklist_num)
             GlobalAllRobotBidder5_4[i].push_back(-1);
         }
     }
+    
+    //全局协调状态赋初值
+    for (int i = 0; i < ROBOTNUM; i++)
+    {
+        GlobalCoorStatus.push_back(true);
+    }
 }
 
 void clearGlobalVar()
@@ -231,6 +243,7 @@ void clearGlobalVar()
         GlobalAllRobotBidder5_4[i].clear();
     }
     
+    //清空全局任务执行队列，写读标志位
     GlobalTEQ1_0.clear();
     GlobalTEQ2_1.clear();
     GlobalTEQ3_2.clear();

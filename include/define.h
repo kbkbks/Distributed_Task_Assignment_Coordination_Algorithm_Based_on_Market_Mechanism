@@ -59,6 +59,9 @@ extern mutex TEQrw3_2; //互斥量，线程阻塞锁，Robot[3]向Robot[2]写，
 extern mutex TEQrw4_3; //互斥量，线程阻塞锁，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
 extern mutex TEQrw5_4; //互斥量，线程阻塞锁，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
 
+//多机器人协调状态互斥量
+extern mutex muCoorStatus; //互斥量，协调状态CoorStatus读写
+
 //多机器人协调条件变量
 extern condition_variable conVAR0_1;   //条件变量，用于线程阻塞，Robot[0]进行协调，Robot[0]向Robot[1]交换任务
 extern condition_variable conVAR1_2;   //条件变量，用于线程阻塞，Robot[1]进行协调，Robot[1]向Robot[2]交换任务
@@ -82,6 +85,9 @@ extern bool GloConFlag2_1; //全局标志，Robot[2]进行协调，Robot[2]向Ro
 extern bool GloConFlag3_2; //全局标志，Robot[3]进行协调，Robot[3]向Robot[2]交换任务，Robot[2]任务执行队列已存入
 extern bool GloConFlag4_3; //全局标志，Robot[4]进行协调，Robot[4]向Robot[3]交换任务，Robot[3]任务执行队列已存入
 extern bool GloConFlag5_4; //全局标志，Robot[5]进行协调，Robot[5]向Robot[4]交换任务，Robot[4]任务执行队列已存入
+
+//多机器人协调全局协调状态
+extern vector<bool> GlobalCoorStatus;  //全局协调状态
 
 //竞拍算法全局任务执行队列
 extern vector<TaskTemplate> GlobalTEQ0_1;  //全局任务执行队列，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读

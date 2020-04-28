@@ -20,9 +20,20 @@ public:
      */
     bool checkCoorStatus();
 
+    /*
+     * 读协调状态，下标0为当前机器人协调状态，下标1和2按字典序存放邻接机器人协调状态
+     */
+    void readCoorStatus();
+
+    /*
+     * 写协调状态
+     */
+    void writeCoorStatus();
+
 private:
-    //bool CoorStatus[ROBOTNUM];
+    crobot CurrentRobot; 
     vector<bool> CoorStatus;    //协调状态
+
 
 };
 

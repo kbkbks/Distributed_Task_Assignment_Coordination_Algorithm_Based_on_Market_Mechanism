@@ -27,6 +27,7 @@
 #include "crobot.h"
 #include "ctasklist.h"
 
+//竞拍算法互斥量
 mutex Mymutex;  //互斥量，生成价值列表
 mutex Mymutex0_1;   //互斥量，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
 mutex Mymutex1_2;   //互斥量，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
@@ -51,6 +52,7 @@ mutex TEQrw3_2; //互斥量，线程阻塞锁，Robot[3]向Robot[2]写，Robot[2
 mutex TEQrw4_3; //互斥量，线程阻塞锁，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
 mutex TEQrw5_4; //互斥量，线程阻塞锁，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
 
+//多机器人协调条件变量
 condition_variable conVAR0_1;   //条件变量，用于线程阻塞，Robot[0]进行协调，Robot[0]向Robot[1]交换任务
 condition_variable conVAR1_2;   //条件变量，用于线程阻塞，Robot[1]进行协调，Robot[1]向Robot[2]交换任务
 condition_variable conVAR2_3;   //条件变量，用于线程阻塞，Robot[2]进行协调，Robot[2]向Robot[3]交换任务
@@ -62,6 +64,7 @@ condition_variable conVAR3_2;   //条件变量，用于线程阻塞，Robot[3]�
 condition_variable conVAR4_3;   //条件变量，用于线程阻塞，Robot[4]进行协调，Robot[4]向Robot[3]交换任务
 condition_variable conVAR5_4;   //条件变量，用于线程阻塞，Robot[5]进行协调，Robot[5]向Robot[4]交换任务
 
+//多机器人协调写读全局标志位
 bool GloConFlag0_1 = false; //全局标志，Robot[0]进行协调，Robot[0]向Robot[1]交换任务，Robot[1]任务执行队列已存入
 bool GloConFlag1_2 = false; //全局标志，Robot[1]进行协调，Robot[1]向Robot[2]交换任务，Robot[2]任务执行队列已存入
 bool GloConFlag2_3 = false; //全局标志，Robot[2]进行协调，Robot[2]向Robot[3]交换任务，Robot[3]任务执行队列已存入
@@ -73,6 +76,7 @@ bool GloConFlag3_2 = false; //全局标志，Robot[3]进行协调，Robot[3]向R
 bool GloConFlag4_3 = false; //全局标志，Robot[4]进行协调，Robot[4]向Robot[3]交换任务，Robot[3]任务执行队列已存入
 bool GloConFlag5_4 = false; //全局标志，Robot[5]进行协调，Robot[5]向Robot[4]交换任务，Robot[4]任务执行队列已存入
 
+//竞拍算法全局任务执行队列
 vector<TaskTemplate> GlobalTEQ0_1;  //全局任务执行队列，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
 vector<TaskTemplate> GlobalTEQ1_2;  //全局任务执行队列，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
 vector<TaskTemplate> GlobalTEQ2_3;  //全局任务执行队列，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
@@ -84,48 +88,48 @@ vector<TaskTemplate> GlobalTEQ3_2;  //全局任务执行队列，Robot[3]向Robo
 vector<TaskTemplate> GlobalTEQ4_3;  //全局任务执行队列，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
 vector<TaskTemplate> GlobalTEQ5_4;  //全局任务执行队列，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
 
+//竞拍算法全局价格
 vector<float> GlobalPrice0_1;   //全局价格，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
 vector<float> GlobalPrice1_2;   //全局价格，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
 vector<float> GlobalPrice2_3;   //全局价格，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
 vector<float> GlobalPrice3_4;   //全局价格，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
 vector<float> GlobalPrice4_5;   //全局价格，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
-
-vector<int> GlobalBidder0_1;    //全局竞标者，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
-vector<int> GlobalBidder1_2;    //全局竞标者，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
-vector<int> GlobalBidder2_3;    //全局竞标者，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
-vector<int> GlobalBidder3_4;    //全局竞标者，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
-vector<int> GlobalBidder4_5;    //全局竞标者，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
-
-vector<vector<float>> GlobalAllRobotPrice0_1(ROBOTNUM);   //全局所有机器人价格，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
-vector<vector<float>> GlobalAllRobotPrice1_2(ROBOTNUM);   //全局所有机器人价格，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
-vector<vector<float>> GlobalAllRobotPrice2_3(ROBOTNUM);   //全局所有机器人价格，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
-vector<vector<float>> GlobalAllRobotPrice3_4(ROBOTNUM);   //全局所有机器人价格，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
-vector<vector<float>> GlobalAllRobotPrice4_5(ROBOTNUM);   //全局所有机器人价格，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
-
-vector<vector<int>> GlobalAllRobotBidder0_1(ROBOTNUM);    //全局所有机器人竞标者，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
-vector<vector<int>> GlobalAllRobotBidder1_2(ROBOTNUM);    //全局所有机器人竞标者，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
-vector<vector<int>> GlobalAllRobotBidder2_3(ROBOTNUM);    //全局所有机器人竞标者，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
-vector<vector<int>> GlobalAllRobotBidder3_4(ROBOTNUM);    //全局所有机器人竞标者，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
-vector<vector<int>> GlobalAllRobotBidder4_5(ROBOTNUM);    //全局所有机器人竞标者，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
-
 vector<float> GlobalPrice1_0;   //全局价格，Robot[1]向Robot[0]写，Robot[0]向Robot[1]读
 vector<float> GlobalPrice2_1;   //全局价格，Robot[2]向Robot[1]写，Robot[1]向Robot[2]读
 vector<float> GlobalPrice3_2;   //全局价格，Robot[3]向Robot[2]写，Robot[2]向Robot[3]读
 vector<float> GlobalPrice4_3;   //全局价格，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
 vector<float> GlobalPrice5_4;   //全局价格，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
 
+//竞拍算法全局竞标者
+vector<int> GlobalBidder0_1;    //全局竞标者，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
+vector<int> GlobalBidder1_2;    //全局竞标者，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
+vector<int> GlobalBidder2_3;    //全局竞标者，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
+vector<int> GlobalBidder3_4;    //全局竞标者，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
+vector<int> GlobalBidder4_5;    //全局竞标者，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
 vector<int> GlobalBidder1_0;    //全局竞标者，Robot[1]向Robot[0]写，Robot[0]向Robot[1]读
 vector<int> GlobalBidder2_1;    //全局竞标者，Robot[2]向Robot[1]写，Robot[1]向Robot[2]读
 vector<int> GlobalBidder3_2;    //全局竞标者，Robot[3]向Robot[2]写，Robot[2]向Robot[3]读
 vector<int> GlobalBidder4_3;    //全局竞标者，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
 vector<int> GlobalBidder5_4;    //全局竞标者，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
 
+//竞拍算法全局所有价格
+vector<vector<float>> GlobalAllRobotPrice0_1(ROBOTNUM);   //全局所有机器人价格，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
+vector<vector<float>> GlobalAllRobotPrice1_2(ROBOTNUM);   //全局所有机器人价格，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
+vector<vector<float>> GlobalAllRobotPrice2_3(ROBOTNUM);   //全局所有机器人价格，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
+vector<vector<float>> GlobalAllRobotPrice3_4(ROBOTNUM);   //全局所有机器人价格，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
+vector<vector<float>> GlobalAllRobotPrice4_5(ROBOTNUM);   //全局所有机器人价格，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
 vector<vector<float>> GlobalAllRobotPrice1_0(ROBOTNUM);   //全局所有机器人价格，Robot[1]向Robot[0]写，Robot[0]向Robot[1]读
 vector<vector<float>> GlobalAllRobotPrice2_1(ROBOTNUM);   //全局所有机器人价格，Robot[2]向Robot[1]写，Robot[1]向Robot[2]读
 vector<vector<float>> GlobalAllRobotPrice3_2(ROBOTNUM);   //全局所有机器人价格，Robot[3]向Robot[2]写，Robot[2]向Robot[3]读
 vector<vector<float>> GlobalAllRobotPrice4_3(ROBOTNUM);   //全局所有机器人价格，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
 vector<vector<float>> GlobalAllRobotPrice5_4(ROBOTNUM);   //全局所有机器人价格，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
 
+//竞拍算法全局所有竞标者
+vector<vector<int>> GlobalAllRobotBidder0_1(ROBOTNUM);    //全局所有机器人竞标者，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
+vector<vector<int>> GlobalAllRobotBidder1_2(ROBOTNUM);    //全局所有机器人竞标者，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
+vector<vector<int>> GlobalAllRobotBidder2_3(ROBOTNUM);    //全局所有机器人竞标者，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
+vector<vector<int>> GlobalAllRobotBidder3_4(ROBOTNUM);    //全局所有机器人竞标者，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
+vector<vector<int>> GlobalAllRobotBidder4_5(ROBOTNUM);    //全局所有机器人竞标者，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
 vector<vector<int>> GlobalAllRobotBidder1_0(ROBOTNUM);    //全局所有机器人竞标者，Robot[1]向Robot[0]写，Robot[0]向Robot[1]读
 vector<vector<int>> GlobalAllRobotBidder2_1(ROBOTNUM);    //全局所有机器人竞标者，Robot[2]向Robot[1]写，Robot[1]向Robot[2]读
 vector<vector<int>> GlobalAllRobotBidder3_2(ROBOTNUM);    //全局所有机器人竞标者，Robot[3]向Robot[2]写，Robot[2]向Robot[3]读

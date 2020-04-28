@@ -34,6 +34,7 @@ typedef struct TaskTemplate{
     float EndPoint[2];  //任务终点
 }TaskTemplate;
 
+//竞拍算法互斥量
 extern mutex Mymutex;   //互斥量
 extern mutex Mymutex0_1;   //互斥量，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
 extern mutex Mymutex1_2;   //互斥量，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
@@ -58,6 +59,7 @@ extern mutex TEQrw3_2; //互斥量，线程阻塞锁，Robot[3]向Robot[2]写，
 extern mutex TEQrw4_3; //互斥量，线程阻塞锁，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
 extern mutex TEQrw5_4; //互斥量，线程阻塞锁，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
 
+//多机器人协调条件变量
 extern condition_variable conVAR0_1;   //条件变量，用于线程阻塞，Robot[0]进行协调，Robot[0]向Robot[1]交换任务
 extern condition_variable conVAR1_2;   //条件变量，用于线程阻塞，Robot[1]进行协调，Robot[1]向Robot[2]交换任务
 extern condition_variable conVAR2_3;   //条件变量，用于线程阻塞，Robot[2]进行协调，Robot[2]向Robot[3]交换任务
@@ -69,6 +71,7 @@ extern condition_variable conVAR3_2;   //条件变量，用于线程阻塞，Rob
 extern condition_variable conVAR4_3;   //条件变量，用于线程阻塞，Robot[4]进行协调，Robot[4]向Robot[3]交换任务
 extern condition_variable conVAR5_4;   //条件变量，用于线程阻塞，Robot[5]进行协调，Robot[5]向Robot[4]交换任务
 
+//多机器人协调写读全局标志位
 extern bool GloConFlag0_1; //全局标志，Robot[0]进行协调，Robot[0]向Robot[1]交换任务，Robot[1]任务执行队列已存入
 extern bool GloConFlag1_2; //全局标志，Robot[1]进行协调，Robot[1]向Robot[2]交换任务，Robot[2]任务执行队列已存入
 extern bool GloConFlag2_3; //全局标志，Robot[2]进行协调，Robot[2]向Robot[3]交换任务，Robot[3]任务执行队列已存入
@@ -80,6 +83,7 @@ extern bool GloConFlag3_2; //全局标志，Robot[3]进行协调，Robot[3]向Ro
 extern bool GloConFlag4_3; //全局标志，Robot[4]进行协调，Robot[4]向Robot[3]交换任务，Robot[3]任务执行队列已存入
 extern bool GloConFlag5_4; //全局标志，Robot[5]进行协调，Robot[5]向Robot[4]交换任务，Robot[4]任务执行队列已存入
 
+//竞拍算法全局任务执行队列
 extern vector<TaskTemplate> GlobalTEQ0_1;  //全局任务执行队列，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
 extern vector<TaskTemplate> GlobalTEQ1_2;  //全局任务执行队列，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
 extern vector<TaskTemplate> GlobalTEQ2_3;  //全局任务执行队列，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
@@ -91,48 +95,48 @@ extern vector<TaskTemplate> GlobalTEQ3_2;  //全局任务执行队列，Robot[3]
 extern vector<TaskTemplate> GlobalTEQ4_3;  //全局任务执行队列，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
 extern vector<TaskTemplate> GlobalTEQ5_4;  //全局任务执行队列，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
 
+//竞拍算法全局价格
 extern vector<float> GlobalPrice0_1;   //全局价格，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
 extern vector<float> GlobalPrice1_2;   //全局价格，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
 extern vector<float> GlobalPrice2_3;   //全局价格，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
 extern vector<float> GlobalPrice3_4;   //全局价格，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
 extern vector<float> GlobalPrice4_5;   //全局价格，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
-
-extern vector<int> GlobalBidder0_1;    //全局竞标者，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
-extern vector<int> GlobalBidder1_2;    //全局竞标者，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
-extern vector<int> GlobalBidder2_3;    //全局竞标者，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
-extern vector<int> GlobalBidder3_4;    //全局竞标者，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
-extern vector<int> GlobalBidder4_5;    //全局竞标者，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
-
-extern vector<vector<float>> GlobalAllRobotPrice0_1;   //全局所有机器人价格，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
-extern vector<vector<float>> GlobalAllRobotPrice1_2;   //全局所有机器人价格，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
-extern vector<vector<float>> GlobalAllRobotPrice2_3;   //全局所有机器人价格，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
-extern vector<vector<float>> GlobalAllRobotPrice3_4;   //全局所有机器人价格，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
-extern vector<vector<float>> GlobalAllRobotPrice4_5;   //全局所有机器人价格，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
-
-extern vector<vector<int>> GlobalAllRobotBidder0_1;    //全局所有机器人竞标者，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
-extern vector<vector<int>> GlobalAllRobotBidder1_2;    //全局所有机器人竞标者，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
-extern vector<vector<int>> GlobalAllRobotBidder2_3;    //全局所有机器人竞标者，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
-extern vector<vector<int>> GlobalAllRobotBidder3_4;    //全局所有机器人竞标者，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
-extern vector<vector<int>> GlobalAllRobotBidder4_5;    //全局所有机器人竞标者，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
-
 extern vector<float> GlobalPrice1_0;   //全局价格，Robot[1]向Robot[0]写，Robot[0]向Robot[1]读
 extern vector<float> GlobalPrice2_1;   //全局价格，Robot[2]向Robot[1]写，Robot[1]向Robot[2]读
 extern vector<float> GlobalPrice3_2;   //全局价格，Robot[3]向Robot[2]写，Robot[2]向Robot[3]读
 extern vector<float> GlobalPrice4_3;   //全局价格，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
 extern vector<float> GlobalPrice5_4;   //全局价格，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
 
+//竞拍算法全局竞标者
+extern vector<int> GlobalBidder0_1;    //全局竞标者，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
+extern vector<int> GlobalBidder1_2;    //全局竞标者，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
+extern vector<int> GlobalBidder2_3;    //全局竞标者，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
+extern vector<int> GlobalBidder3_4;    //全局竞标者，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
+extern vector<int> GlobalBidder4_5;    //全局竞标者，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
 extern vector<int> GlobalBidder1_0;    //全局竞标者，Robot[1]向Robot[0]写，Robot[0]向Robot[1]读
 extern vector<int> GlobalBidder2_1;    //全局竞标者，Robot[2]向Robot[1]写，Robot[1]向Robot[2]读
 extern vector<int> GlobalBidder3_2;    //全局竞标者，Robot[3]向Robot[2]写，Robot[2]向Robot[3]读
 extern vector<int> GlobalBidder4_3;    //全局竞标者，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
 extern vector<int> GlobalBidder5_4;    //全局竞标者，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
 
+//竞拍算法全局所有价格
+extern vector<vector<float>> GlobalAllRobotPrice0_1;   //全局所有机器人价格，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
+extern vector<vector<float>> GlobalAllRobotPrice1_2;   //全局所有机器人价格，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
+extern vector<vector<float>> GlobalAllRobotPrice2_3;   //全局所有机器人价格，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
+extern vector<vector<float>> GlobalAllRobotPrice3_4;   //全局所有机器人价格，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
+extern vector<vector<float>> GlobalAllRobotPrice4_5;   //全局所有机器人价格，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
 extern vector<vector<float>> GlobalAllRobotPrice1_0;   //全局所有机器人价格，Robot[1]向Robot[0]写，Robot[0]向Robot[1]读
 extern vector<vector<float>> GlobalAllRobotPrice2_1;   //全局所有机器人价格，Robot[2]向Robot[1]写，Robot[1]向Robot[2]读
 extern vector<vector<float>> GlobalAllRobotPrice3_2;   //全局所有机器人价格，Robot[3]向Robot[2]写，Robot[2]向Robot[3]读
 extern vector<vector<float>> GlobalAllRobotPrice4_3;   //全局所有机器人价格，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
 extern vector<vector<float>> GlobalAllRobotPrice5_4;   //全局所有机器人价格，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
 
+//竞拍算法全局所有竞标者
+extern vector<vector<int>> GlobalAllRobotBidder0_1;    //全局所有机器人竞标者，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
+extern vector<vector<int>> GlobalAllRobotBidder1_2;    //全局所有机器人竞标者，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
+extern vector<vector<int>> GlobalAllRobotBidder2_3;    //全局所有机器人竞标者，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
+extern vector<vector<int>> GlobalAllRobotBidder3_4;    //全局所有机器人竞标者，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
+extern vector<vector<int>> GlobalAllRobotBidder4_5;    //全局所有机器人竞标者，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
 extern vector<vector<int>> GlobalAllRobotBidder1_0;    //全局所有机器人竞标者，Robot[1]向Robot[0]写，Robot[0]向Robot[1]读
 extern vector<vector<int>> GlobalAllRobotBidder2_1;    //全局所有机器人竞标者，Robot[2]向Robot[1]写，Robot[1]向Robot[2]读
 extern vector<vector<int>> GlobalAllRobotBidder3_2;    //全局所有机器人竞标者，Robot[3]向Robot[2]写，Robot[2]向Robot[3]读

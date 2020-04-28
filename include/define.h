@@ -89,7 +89,7 @@ extern bool GloConFlag5_4; //全局标志，Robot[5]进行协调，Robot[5]向Ro
 //多机器人协调全局协调状态
 extern vector<bool> GlobalCoorStatus;  //全局协调状态
 
-//竞拍算法全局任务执行队列
+//多机器人协调全局任务执行队列
 extern vector<TaskTemplate> GlobalTEQ0_1;  //全局任务执行队列，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
 extern vector<TaskTemplate> GlobalTEQ1_2;  //全局任务执行队列，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
 extern vector<TaskTemplate> GlobalTEQ2_3;  //全局任务执行队列，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
@@ -112,6 +112,18 @@ extern vector<float> GlobalPrice2_1;   //全局价格，Robot[2]向Robot[1]写�
 extern vector<float> GlobalPrice3_2;   //全局价格，Robot[3]向Robot[2]写，Robot[2]向Robot[3]读
 extern vector<float> GlobalPrice4_3;   //全局价格，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
 extern vector<float> GlobalPrice5_4;   //全局价格，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
+
+//多机器人协调全局NewCoorTEQ
+extern vector<TaskTemplate> GlobalNewCoorTEQ0_1;  //全局NewCoorTEQ，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
+extern vector<TaskTemplate> GlobalNewCoorTEQ1_2;  //全局NewCoorTEQ，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
+extern vector<TaskTemplate> GlobalNewCoorTEQ2_3;  //全局NewCoorTEQ，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
+extern vector<TaskTemplate> GlobalNewCoorTEQ3_4;  //全局NewCoorTEQ，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
+extern vector<TaskTemplate> GlobalNewCoorTEQ4_5;  //全局NewCoorTEQ，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
+extern vector<TaskTemplate> GlobalNewCoorTEQ1_0;  //全局NewCoorTEQ，Robot[1]向Robot[0]写，Robot[0]向Robot[1]读
+extern vector<TaskTemplate> GlobalNewCoorTEQ2_1;  //全局NewCoorTEQ，Robot[2]向Robot[1]写，Robot[1]向Robot[2]读
+extern vector<TaskTemplate> GlobalNewCoorTEQ3_2;  //全局NewCoorTEQ，Robot[3]向Robot[2]写，Robot[2]向Robot[3]读
+extern vector<TaskTemplate> GlobalNewCoorTEQ4_3;  //全局NewCoorTEQ，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
+extern vector<TaskTemplate> GlobalNewCoorTEQ5_4;  //全局NewCoorTEQ，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
 
 //竞拍算法全局竞标者
 extern vector<int> GlobalBidder0_1;    //全局竞标者，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读

@@ -30,8 +30,18 @@ public:
      */
     void writeCoorStatus();
 
+    /*
+     * 读CoorTEQ
+     */
+    void readTEQ();
+
+    /*
+     * 写CoorTEQ
+     */
+    void writeTEQ();    
+
 private:
-    crobot CurrentRobot; 
+    crobot * CurrentRobot; 
     vector<bool> CoorStatus;    //协调状态
 
 

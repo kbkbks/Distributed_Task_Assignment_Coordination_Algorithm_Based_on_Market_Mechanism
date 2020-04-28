@@ -2277,6 +2277,7 @@ vector<TaskTemplate> crobot::setTaskExecutionQueue()
 void crobot::setCoorTEQWidth(int CoorCommunicateWidth)
 {
     CoorTEQ = new vector<TaskTemplate>[CoorCommunicateWidth];
+    NewCoorTEQ = new vector<TaskTemplate>[CoorCommunicateWidth];
 }
 
 /*
@@ -2285,6 +2286,7 @@ void crobot::setCoorTEQWidth(int CoorCommunicateWidth)
 void crobot::deleteCoorTEQWidth()
 {
     delete[] CoorTEQ;
+    delete[] NewCoorTEQ;
 }
 
 /*
@@ -2310,7 +2312,7 @@ void crobot::multirobotCoordination(int CoorCommunicateLength)
 
         cmultirobotCoordinate MulriRobotCoordinate0(CoorTEQ[0], TaskExecutionQueue, CoorCommunicateLength, Robot_No);
         MulriRobotCoordinate0.taskCoordinate();
-        //MulriRobotCoordinate0.sendNewCoorTEQ();
+        NewCoorTEQ[0] = MulriRobotCoordinate0.sendNewCoorTEQ();
         TaskExecutionQueue = MulriRobotCoordinate0.sendNewCurrentTEQ();
     }
     else
@@ -2326,7 +2328,23 @@ void crobot::multirobotCoordination(int CoorCommunicateLength)
 
         cmultirobotCoordinate MulriRobotCoordinate1(CoorTEQ[1], TaskExecutionQueue, CoorCommunicateLength, Robot_No);
         MulriRobotCoordinate1.taskCoordinate();
-        //MulriRobotCoordinate0.sendNewCoorTEQ();
+        NewCoorTEQ[1] = MulriRobotCoordinate1.sendNewCoorTEQ();
         TaskExecutionQueue = MulriRobotCoordinate1.sendNewCurrentTEQ();
     }
+}
+
+/*
+ * 设置NewCoorTEQ
+ */
+vector<TaskTemplate> crobot::setNewCoorTEQ(int i)
+{
+    return NewCoorTEQ[i];
+}
+
+/*
+ * 更新NewCoorTEQ
+ */
+void crobot::updateNewCoorTEQ(vector<TaskTemplate> NewCoorTEQ)
+{
+    TaskExecutionQueue = NewCoorTEQ;
 }

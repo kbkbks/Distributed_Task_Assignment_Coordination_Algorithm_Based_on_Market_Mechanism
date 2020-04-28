@@ -226,6 +226,16 @@ public:
      */
     float calTaskCoorUtility();
 
+    /*
+     * 设置NewCoorTEQ
+    */
+    vector<TaskTemplate> setNewCoorTEQ(int i);
+
+    /*
+     * 更新NewCoorTEQ
+     */
+    void crobot::updateNewCoorTEQ(vector<TaskTemplate> NewCoorTEQ);
+
 private:
     //常规任务分配变量
     float RobotLocation[2]; //机器人位置
@@ -252,6 +262,7 @@ private:
     int CoorCommunicateTime;    //协调通信次数
     int CoorCommunicateWidth;   //协调通信范围，这里为邻接机器人，即为2
     vector<TaskTemplate> * CoorTEQ; //协调对象任务执行队列数组，下标表示不同协调对象的TEQ
+    vector<TaskTemplate> * NewCoorTEQ;  //协调后对象新的任务执行队列数组，下标表示不同协调对象的TEQ
     
 };
 

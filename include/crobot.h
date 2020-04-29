@@ -234,7 +234,7 @@ public:
     /*
      * 更新NewCoorTEQ
      */
-    void crobot::updateNewCoorTEQ(vector<TaskTemplate> NewCoorTEQ);
+    void updateNewCoorTEQ(vector<TaskTemplate> NewCoorTEQ);
 
 private:
     //常规任务分配变量

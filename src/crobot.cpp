@@ -115,8 +115,8 @@ void crobot::generateValueList(ctasklist * tasklist, int tasklist_num, float ran
     RobotWriteThread.join();
 
     //机器人协调通信类，用于进入协调过程
-    ccoordinatecommunication CoordinateCommunication(this);
-    CoordinateCommunication.enterCoordinate();
+    //ccoordinatecommunication CoordinateCommunication(this);
+    //CoordinateCommunication.enterCoordinate();
 
     //多机器人任务协调策略（多线程单个机器人，完全分布式策略）
     //multirobotCoordination(3);
@@ -2184,7 +2184,7 @@ void readTaskExecutionQueue(crobot * Robot)
     case 0:
     {  
         //robot[0]向robot[1]写数据，robot[1]进行协调
-        //unique_lock<mutex> lck0_1(TEQrw0_1);
+        unique_lock<mutex> lck0_1(TEQrw0_1);
         GlobalTEQ0_1 = Robot->setTaskExecutionQueue();  //写函数
         GloConFlag1_0 = true; 
         conVAR1_0.notify_all();
@@ -2194,8 +2194,8 @@ void readTaskExecutionQueue(crobot * Robot)
     case 1:
     {
         //robot[1]向robot[0]和robot[2]写数据，robot[0]和robot[2]进行协调
-        //unique_lock<mutex> lck1_0(TEQrw1_0);
-        //unique_lock<mutex> lck1_2(TEQrw1_2);
+        unique_lock<mutex> lck1_0(TEQrw1_0);
+        unique_lock<mutex> lck1_2(TEQrw1_2);
         GlobalTEQ1_0 = Robot->setTaskExecutionQueue();  //写函数
         GloConFlag0_1 = true; 
         conVAR0_1.notify_all();
@@ -2208,8 +2208,8 @@ void readTaskExecutionQueue(crobot * Robot)
     case 2:
     {
         //robot[2]向robot[1]和robot[3]写数据，robot[1]和robot[3]进行协调
-        //unique_lock<mutex> lck2_1(TEQrw2_1);
-        //unique_lock<mutex> lck2_3(TEQrw2_3);
+        unique_lock<mutex> lck2_1(TEQrw2_1);
+        unique_lock<mutex> lck2_3(TEQrw2_3);
         GlobalTEQ2_1 = Robot->setTaskExecutionQueue();  //写函数
         GloConFlag1_2 = true;
         conVAR1_2.notify_all();
@@ -2236,8 +2236,8 @@ void readTaskExecutionQueue(crobot * Robot)
     case 4:
     {
         //robot4向robot[3]和robot[5]写数据，robot[3]和robot[5]进行协调
-        //unique_lock<mutex> lck4_3(TEQrw4_3);
-        //unique_lock<mutex> lck4_5(TEQrw4_5);
+        unique_lock<mutex> lck4_3(TEQrw4_3);
+        unique_lock<mutex> lck4_5(TEQrw4_5);
         GlobalTEQ4_3 = Robot->setTaskExecutionQueue();  //写函数
         GloConFlag3_4 = true;
         conVAR3_4.notify_all();
@@ -2250,7 +2250,7 @@ void readTaskExecutionQueue(crobot * Robot)
     case 5:
     {
         //robot5向robot[4]写数据，robot[4]进行协调
-        //unique_lock<mutex> lck5_4(TEQrw5_4);
+        unique_lock<mutex> lck5_4(TEQrw5_4);
         GlobalTEQ5_4 = Robot->setTaskExecutionQueue();  //写函数
         GloConFlag4_5 = true;   
         conVAR4_5.notify_all();

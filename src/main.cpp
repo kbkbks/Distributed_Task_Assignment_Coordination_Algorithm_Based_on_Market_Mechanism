@@ -79,6 +79,30 @@ bool GloConFlag3_2 = false; //全局标志，Robot[3]进行协调，Robot[3]向R
 bool GloConFlag4_3 = false; //全局标志，Robot[4]进行协调，Robot[4]向Robot[3]交换任务，Robot[3]任务执行队列已存入
 bool GloConFlag5_4 = false; //全局标志，Robot[5]进行协调，Robot[5]向Robot[4]交换任务，Robot[4]任务执行队列已存入
 
+//多机器人协调NewCoorTEQ刷新标志位
+bool GloNewCoorTEQFlag0_1 = false; //全局标志，Robot[0]已发送NewCoorTEQ，Robot[1]可读，true为已经读入
+bool GloNewCoorTEQFlag1_2 = false; //全局标志，Robot[1]已发送NewCoorTEQ，Robot[2]可读
+bool GloNewCoorTEQFlag2_3 = false; //全局标志，Robot[2]已发送NewCoorTEQ，Robot[3]可读
+bool GloNewCoorTEQFlag3_4 = false; //全局标志，Robot[3]已发送NewCoorTEQ，Robot[4]可读
+bool GloNewCoorTEQFlag4_5 = false; //全局标志，Robot[4]已发送NewCoorTEQ，Robot[5]可读
+bool GloNewCoorTEQFlag1_0 = false; //全局标志，Robot[1]已发送NewCoorTEQ，Robot[0]可读
+bool GloNewCoorTEQFlag2_1 = false; //全局标志，Robot[2]已发送NewCoorTEQ，Robot[1]可读
+bool GloNewCoorTEQFlag3_2 = false; //全局标志，Robot[3]已发送NewCoorTEQ，Robot[2]可读
+bool GloNewCoorTEQFlag4_3 = false; //全局标志，Robot[4]已发送NewCoorTEQ，Robot[3]可读
+bool GloNewCoorTEQFlag5_4 = false; //全局标志，Robot[5]已发送NewCoorTEQ，Robot[4]可读
+
+//多机器人协调NewCoorTEQ刷新条件变量
+condition_variable convarNCQ0_1;    //条件变量，Robot[1]读取Robot[0]发送的NewCoorTEQ
+condition_variable convarNCQ1_2;    //条件变量，Robot[2]读取Robot[1]发送的NewCoorTEQ
+condition_variable convarNCQ2_3;    //条件变量，Robot[3]读取Robot[2]发送的NewCoorTEQ
+condition_variable convarNCQ3_4;    //条件变量，Robot[4]读取Robot[3]发送的NewCoorTEQ
+condition_variable convarNCQ4_5;    //条件变量，Robot[5]读取Robot[4]发送的NewCoorTEQ
+condition_variable convarNCQ1_0;    //条件变量，Robot[0]读取Robot[1]发送的NewCoorTEQ
+condition_variable convarNCQ2_1;    //条件变量，Robot[1]读取Robot[2]发送的NewCoorTEQ
+condition_variable convarNCQ3_2;    //条件变量，Robot[2]读取Robot[3]发送的NewCoorTEQ
+condition_variable convarNCQ4_3;    //条件变量，Robot[3]读取Robot[4]发送的NewCoorTEQ
+condition_variable convarNCQ5_4;    //条件变量，Robot[4]读取Robot[5]发送的NewCoorTEQ
+
 //多机器人协调全局协调状态
 vector<bool> GlobalCoorStatus;  //全局协调状态
 

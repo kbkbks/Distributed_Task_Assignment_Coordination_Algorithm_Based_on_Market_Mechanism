@@ -115,8 +115,8 @@ void crobot::generateValueList(ctasklist * tasklist, int tasklist_num, float ran
     RobotWriteThread.join();
 
     //机器人协调通信类，用于进入协调过程
-    //ccoordinatecommunication CoordinateCommunication(this);
-    //CoordinateCommunication.enterCoordinate();
+    ccoordinatecommunication CoordinateCommunication(this);
+    CoordinateCommunication.enterCoordinate();
 
     //多机器人任务协调策略（多线程单个机器人，完全分布式策略）
     //multirobotCoordination(3);

@@ -40,6 +40,16 @@ public:
      */
     void writeTEQ();    
 
+    /*
+     * readNewCoorTEQ
+     */
+    void readNewCoorTEQ();
+
+    /*
+     * 检查协调对象NewCoorTEQ刷新
+     */
+    void checkObjectNewCoorTEQ();
+
 private:
     crobot * CurrentRobot; 
     vector<bool> CoorStatus;    //协调状态

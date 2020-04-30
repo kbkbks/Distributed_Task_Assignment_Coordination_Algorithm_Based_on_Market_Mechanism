@@ -60,7 +60,7 @@ void ccoordinatecommunication::enterCoordinate()
             //读CoorTEQ
             readTEQ();
 
-            //协调算法q
+            //协调算法
             cout << "机器人" << CurrentRobot->sendRobotNum() << "协调算法" << endl;
             //CurrentRobot->multirobotCoordination(2);
 

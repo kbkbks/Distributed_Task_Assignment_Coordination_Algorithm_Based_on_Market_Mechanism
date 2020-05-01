@@ -57,6 +57,7 @@ private:
     bool CurrentCoorStatus; //当前机器人协调状态
     int NewCoorTEQNumber;   //读取NewCoorTEQ次数
 
+
 };
 
 #endif // ! _CCOORDINATECOMMUNICATION_H_

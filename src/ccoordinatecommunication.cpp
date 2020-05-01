@@ -84,14 +84,18 @@ void ccoordinatecommunication::enterCoordinate()
                     }
                     writeCoorStatus();
                     muCoorStatus.unlock();
-                }                
+                }
+                else
+                {
+                    muCoorStatus.unlock();
+                    cout << "当前机器人" << CurrentRobot->sendRobotNum() << "已完成协调" << endl;
+                }
+                                
                 //机器人协调退出条件
                 if (NewCoorTEQNumber == (CoorStatus.size()-1))
                 {
-                    muCoorStatus.unlock();
                     break;
                 }
-                muCoorStatus.unlock();
             }
             else
             {
@@ -100,7 +104,6 @@ void ccoordinatecommunication::enterCoordinate()
 
                 //sleep(1);
             }
-
         }
     }
     else

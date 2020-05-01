@@ -3,7 +3,7 @@
 /*
  * 构造函数
  */
-ccoordinatecommunication::ccoordinatecommunication(crobot * Robot) : CurrentRobot(Robot)
+ccoordinatecommunication::ccoordinatecommunication(crobot * Robot) : CurrentRobot(Robot), CurrentCoorStatus(true), NewCoorTEQNumber(0)
 {
     switch (CurrentRobot->sendRobotNum())
     {
@@ -32,59 +32,80 @@ ccoordinatecommunication::ccoordinatecommunication(crobot * Robot) : CurrentRobo
  */
 void ccoordinatecommunication::enterCoordinate()
 {
-    while(1)
+    int CurrentTEQLength = CurrentRobot->getTaskExecutionQueueLength();
+    //判断当前任务执行队列是否大于协调长度
+    if(CurrentTEQLength > 2 + 1)
     {
-        //读协调状态
-        muCoorStatus.lock();
-        readCoorStatus();
-
-        //读NewCoorTEQ(CurrentTEQ)
-        readNewCoorTEQ();
-
-        //判断协调条件
-        bool Status = checkCoorStatus();
-        if (Status == true)
-        //自身可协调，邻接机器人可协调，满足协调三规则
+        while(1)
         {
-            //锁协调状态
-            for (auto iter = CoorStatus.begin(); iter != CoorStatus.end(); ++iter)
-            {
-                *iter = false;
-            }
-            writeCoorStatus();
-            muCoorStatus.unlock();
-
-            //检查协调对象NewCoorTEQ刷新
-            checkObjectNewCoorTEQ();
-
-            //读CoorTEQ
-            readTEQ();
-
-            //协调算法
-            cout << "机器人" << CurrentRobot->sendRobotNum() << "协调算法" << endl;
-            //CurrentRobot->multirobotCoordination(2);
-
-            //写CurrentTEQ和CoorTEQ
-            writeTEQ();
-
-            //恢复协调状态
+            //读协调状态
             muCoorStatus.lock();
-            for (auto iter = CoorStatus.begin(); iter != CoorStatus.end(); ++iter)
+            readCoorStatus();
+
+            //读NewCoorTEQ(CurrentTEQ)
+            readNewCoorTEQ();
+
+            //判断协调条件
+            bool Status = checkCoorStatus();
+            if (Status == true)
             {
-                *iter = true;
+                if (CurrentCoorStatus)
+                //自身可协调，邻接机器人可协调，满足协调三规则        
+                {
+                    //锁协调状态
+                    for (auto iter = CoorStatus.begin(); iter != CoorStatus.end(); ++iter)
+                    {
+                        *iter = false;
+                    }
+                    writeCoorStatus();
+                    muCoorStatus.unlock();
+
+                    //检查协调对象NewCoorTEQ刷新
+                    checkObjectNewCoorTEQ();
+
+                    //读CoorTEQ
+                    readTEQ();
+
+                    //协调算法
+                    cout << "机器人" << CurrentRobot->sendRobotNum() << "协调算法" << endl;
+                    CurrentRobot->multirobotCoordination(2);
+
+                    //写CurrentTEQ和CoorTEQ
+                    writeTEQ();
+                    
+                    //自身协调状态置false
+                    CurrentCoorStatus = false;
+
+                    //恢复协调状态
+                    muCoorStatus.lock();
+                    for (auto iter = CoorStatus.begin(); iter != CoorStatus.end(); ++iter)
+                    {
+                        *iter = true;
+                    }
+                    writeCoorStatus();
+                    muCoorStatus.unlock();
+                }                
+                //机器人协调退出条件
+                if (NewCoorTEQNumber == (CoorStatus.size()-1))
+                {
+                    muCoorStatus.unlock();
+                    break;
+                }
+                muCoorStatus.unlock();
             }
-            writeCoorStatus();
-            muCoorStatus.unlock();
+            else
+            {
+                muCoorStatus.unlock();
+                cout << "协调条件不满足" << endl;
 
-            break;
+                //sleep(1);
+            }
+
         }
-        else
-        {
-            muCoorStatus.unlock();
-
-            //sleep(3);
-        }
-
+    }
+    else
+    {
+        cout << "当前机器人任务执行队列小于协调长度，不进行协调！" << endl;
     }
 }
 
@@ -361,6 +382,8 @@ void ccoordinatecommunication::readNewCoorTEQ()
             unique_lock<mutex> lck1_0(TEQrw1_0);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ1_0);
             GloNewCoorTEQFlag1_0 = true;
+            ++NewCoorTEQNumber;
+            GlobalNewCoorTEQ1_0.clear();
             convarNCQ1_0.notify_all();
         }
         break;
@@ -373,6 +396,8 @@ void ccoordinatecommunication::readNewCoorTEQ()
             unique_lock<mutex> lck0_1(TEQrw0_1);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ0_1);
             GloNewCoorTEQFlag0_1 = true;
+            ++NewCoorTEQNumber;
+            GlobalNewCoorTEQ0_1.clear();
             convarNCQ0_1.notify_all();
         }
         else if(!GlobalNewCoorTEQ2_1.empty())
@@ -380,6 +405,8 @@ void ccoordinatecommunication::readNewCoorTEQ()
             unique_lock<mutex> lck2_1(TEQrw2_1);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ2_1);
             GloNewCoorTEQFlag2_1 = true;
+            ++NewCoorTEQNumber;
+            GlobalNewCoorTEQ2_1.clear();
             convarNCQ2_1.notify_all();
         }
         break;
@@ -392,6 +419,8 @@ void ccoordinatecommunication::readNewCoorTEQ()
             unique_lock<mutex> lck1_2(TEQrw1_2);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ1_2);
             GloNewCoorTEQFlag1_2 = true;
+            ++NewCoorTEQNumber;
+            GlobalNewCoorTEQ1_2.clear();
             convarNCQ1_2.notify_all();
         }
         else if(!GlobalNewCoorTEQ3_2.empty())
@@ -399,6 +428,8 @@ void ccoordinatecommunication::readNewCoorTEQ()
             unique_lock<mutex> lck3_2(TEQrw3_2);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ3_2);
             GloNewCoorTEQFlag3_2 = true;
+            ++NewCoorTEQNumber;
+            GlobalNewCoorTEQ3_2.clear();
             convarNCQ3_2.notify_all();
         }
         break;
@@ -411,6 +442,8 @@ void ccoordinatecommunication::readNewCoorTEQ()
             unique_lock<mutex> lck2_3(TEQrw2_3);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ2_3);
             GloNewCoorTEQFlag2_3 = true;
+            ++NewCoorTEQNumber;
+            GlobalNewCoorTEQ2_3.clear();
             convarNCQ2_3.notify_all();
         }
         else if(!GlobalNewCoorTEQ4_3.empty())
@@ -418,6 +451,8 @@ void ccoordinatecommunication::readNewCoorTEQ()
             unique_lock<mutex> lck4_3(TEQrw4_3);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ4_3);
             GloNewCoorTEQFlag4_3 = true;
+            ++NewCoorTEQNumber;
+            GlobalNewCoorTEQ4_3.clear();
             convarNCQ4_3.notify_all();
         }
         break;
@@ -430,6 +465,8 @@ void ccoordinatecommunication::readNewCoorTEQ()
             unique_lock<mutex> lck3_4(TEQrw3_4);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ3_4);
             GloNewCoorTEQFlag3_4 = true;
+            ++NewCoorTEQNumber;
+            GlobalNewCoorTEQ3_4.clear();
             convarNCQ3_4.notify_all();
         }
         else if(!GlobalNewCoorTEQ5_4.empty())
@@ -437,6 +474,8 @@ void ccoordinatecommunication::readNewCoorTEQ()
             unique_lock<mutex> lck5_4(TEQrw5_4);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ5_4);
             GloNewCoorTEQFlag5_4 = true;
+            ++NewCoorTEQNumber;
+            GlobalNewCoorTEQ5_4.clear();
             convarNCQ5_4.notify_all();
         }
         break;
@@ -449,6 +488,8 @@ void ccoordinatecommunication::readNewCoorTEQ()
             unique_lock<mutex> lck4_5(TEQrw4_5);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ4_5);
             GloNewCoorTEQFlag4_5 = true;
+            ++NewCoorTEQNumber;
+            GlobalNewCoorTEQ4_5.clear();
             convarNCQ4_5.notify_all();
         }
 

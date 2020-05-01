@@ -50,10 +50,12 @@ public:
      */
     void checkObjectNewCoorTEQ();
 
+
 private:
     crobot * CurrentRobot; 
     vector<bool> CoorStatus;    //协调状态
-
+    bool CurrentCoorStatus; //当前机器人协调状态
+    int NewCoorTEQNumber;   //读取NewCoorTEQ次数
 
 };
 

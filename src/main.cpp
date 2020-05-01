@@ -301,6 +301,32 @@ void clearGlobalVar()
     GloConFlag3_2 = false;
     GloConFlag4_3 = false;
     GloConFlag5_4 = false;
+
+    //清空多机器人协调NewCoorTEQ刷新标志位，多机器人协调全局NewCoorTEQ
+    GloNewCoorTEQFlag0_1 = false;
+    GloNewCoorTEQFlag1_2 = false;
+    GloNewCoorTEQFlag2_3 = false;
+    GloNewCoorTEQFlag3_4 = false;
+    GloNewCoorTEQFlag4_5 = false;
+    GloNewCoorTEQFlag1_0 = false;
+    GloNewCoorTEQFlag2_1 = false;
+    GloNewCoorTEQFlag3_2 = false;
+    GloNewCoorTEQFlag4_3 = false;
+    GloNewCoorTEQFlag5_4 = false;
+
+    GlobalNewCoorTEQ0_1.clear();
+    GlobalNewCoorTEQ1_2.clear();
+    GlobalNewCoorTEQ2_3.clear();
+    GlobalNewCoorTEQ3_4.clear();
+    GlobalNewCoorTEQ4_5.clear();
+    GlobalNewCoorTEQ1_0.clear();
+    GlobalNewCoorTEQ2_1.clear();
+    GlobalNewCoorTEQ3_2.clear();
+    GlobalNewCoorTEQ4_3.clear();
+    GlobalNewCoorTEQ5_4.clear();
+
+    //刷新全局协调状态
+    GlobalCoorStatus.clear();
 }
 
 int main()

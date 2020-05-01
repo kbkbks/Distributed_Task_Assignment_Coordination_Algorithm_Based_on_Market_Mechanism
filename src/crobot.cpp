@@ -2313,6 +2313,7 @@ void crobot::multirobotCoordination(int CoorCommunicateLength)
         cmultirobotCoordinate MulriRobotCoordinate0(CoorTEQ[0], TaskExecutionQueue, CoorCommunicateLength, Robot_No);
         MulriRobotCoordinate0.taskCoordinate();
         NewCoorTEQ[0] = MulriRobotCoordinate0.sendNewCoorTEQ();
+
         TaskExecutionQueue = MulriRobotCoordinate0.sendNewCurrentTEQ();
     }
     else
@@ -2329,6 +2330,7 @@ void crobot::multirobotCoordination(int CoorCommunicateLength)
         cmultirobotCoordinate MulriRobotCoordinate1(CoorTEQ[1], TaskExecutionQueue, CoorCommunicateLength, Robot_No);
         MulriRobotCoordinate1.taskCoordinate();
         NewCoorTEQ[1] = MulriRobotCoordinate1.sendNewCoorTEQ();
+
         TaskExecutionQueue = MulriRobotCoordinate1.sendNewCurrentTEQ();
     }
 }
@@ -2344,7 +2346,15 @@ vector<TaskTemplate> crobot::setNewCoorTEQ(int i)
 /*
  * 更新NewCoorTEQ
  */
-void crobot::updateNewCoorTEQ(vector<TaskTemplate> NewCoorTEQ)
+void crobot::updateNewCoorTEQ(vector<TaskTemplate> newCoorTEQ)
 {
-    TaskExecutionQueue = NewCoorTEQ;
+    TaskExecutionQueue = newCoorTEQ;
+}
+
+/*
+ * 返回任务执行列表长度
+ */
+int crobot::getTaskExecutionQueueLength()
+{
+    return TaskExecutionQueue.size();
 }

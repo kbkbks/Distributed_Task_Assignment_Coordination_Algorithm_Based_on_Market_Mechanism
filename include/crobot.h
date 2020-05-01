@@ -236,6 +236,11 @@ public:
      */
     void updateNewCoorTEQ(vector<TaskTemplate> NewCoorTEQ);
 
+    /*
+     * 返回任务执行列表长度
+     */
+    int getTaskExecutionQueueLength();
+
 private:
     //常规任务分配变量
     float RobotLocation[2]; //机器人位置

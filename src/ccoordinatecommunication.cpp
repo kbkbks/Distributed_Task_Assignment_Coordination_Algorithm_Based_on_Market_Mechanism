@@ -34,7 +34,7 @@ void ccoordinatecommunication::enterCoordinate()
 {
     int CurrentTEQLength = CurrentRobot->getTaskExecutionQueueLength();
     //判断当前任务执行队列是否大于协调长度
-    if(CurrentTEQLength > 2 + 1)
+    if(CurrentTEQLength > 3 + 1)
     {
         while(1)
         {
@@ -68,7 +68,7 @@ void ccoordinatecommunication::enterCoordinate()
 
                     //协调算法
                     cout << "机器人" << CurrentRobot->sendRobotNum() << "协调算法" << endl;
-                    CurrentRobot->multirobotCoordination(2);
+                    CurrentRobot->multirobotCoordination(3);
 
                     //写CurrentTEQ和CoorTEQ
                     writeTEQ();
@@ -88,7 +88,7 @@ void ccoordinatecommunication::enterCoordinate()
                 else
                 {
                     muCoorStatus.unlock();
-                    cout << "当前机器人" << CurrentRobot->sendRobotNum() << "已完成协调" << endl;
+                    //cout << "当前机器人" << CurrentRobot->sendRobotNum() << "已完成协调" << endl;
                 }
                                 
                 //机器人协调退出条件
@@ -100,7 +100,7 @@ void ccoordinatecommunication::enterCoordinate()
             else
             {
                 muCoorStatus.unlock();
-                cout << "协调条件不满足" << endl;
+                //cout << "协调条件不满足" << endl;
 
                 //sleep(1);
             }
@@ -248,6 +248,7 @@ void ccoordinatecommunication::readTEQ()
         unique_lock<mutex> lck2_1(TEQrw2_1);
         CurrentRobot->updateTaskExecutionQueue(GlobalTEQ0_1, 0);   //读函数
         CurrentRobot->updateTaskExecutionQueue(GlobalTEQ2_1, 1);   //读函数
+        break;
     }
 
     case 2:

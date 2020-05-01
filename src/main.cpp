@@ -19,7 +19,7 @@
  * 2020-04-10 加入多机器人协调策略，写入单机器人线程当中
  * 通信协调范围：邻接机器人
  * 通信协调次数：1次
- * 通信协调长度：TaskExecutionQueue 5个任务长度
+ * 通信协调长度：TaskExecutionQueue 3个任务长度
  */
 
 #include "define.h"

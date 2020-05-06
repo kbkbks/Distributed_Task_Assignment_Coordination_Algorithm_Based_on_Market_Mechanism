@@ -115,11 +115,8 @@ void crobot::generateValueList(ctasklist * tasklist, int tasklist_num, float ran
     RobotWriteThread.join();
 
     //机器人协调通信类，用于进入协调过程
-    //ccoordinatecommunication CoordinateCommunication(this);
-    //CoordinateCommunication.enterCoordinate();
-
-    //多机器人任务协调策略（多线程单个机器人，完全分布式策略）
-    //multirobotCoordination(3);
+    ccoordinatecommunication CoordinateCommunication(this);
+    CoordinateCommunication.enterCoordinate();
 
     //回收CoorTEQWidth内存
     deleteCoorTEQWidth();
@@ -2313,6 +2310,7 @@ void crobot::multirobotCoordination(int CoorCommunicateLength)
         cmultirobotCoordinate MulriRobotCoordinate0(CoorTEQ[0], TaskExecutionQueue, CoorCommunicateLength, Robot_No);
         MulriRobotCoordinate0.taskCoordinate();
         NewCoorTEQ[0] = MulriRobotCoordinate0.sendNewCoorTEQ();
+
         TaskExecutionQueue = MulriRobotCoordinate0.sendNewCurrentTEQ();
     }
     else
@@ -2329,6 +2327,7 @@ void crobot::multirobotCoordination(int CoorCommunicateLength)
         cmultirobotCoordinate MulriRobotCoordinate1(CoorTEQ[1], TaskExecutionQueue, CoorCommunicateLength, Robot_No);
         MulriRobotCoordinate1.taskCoordinate();
         NewCoorTEQ[1] = MulriRobotCoordinate1.sendNewCoorTEQ();
+
         TaskExecutionQueue = MulriRobotCoordinate1.sendNewCurrentTEQ();
     }
 }
@@ -2344,7 +2343,15 @@ vector<TaskTemplate> crobot::setNewCoorTEQ(int i)
 /*
  * 更新NewCoorTEQ
  */
-void crobot::updateNewCoorTEQ(vector<TaskTemplate> NewCoorTEQ)
+void crobot::updateNewCoorTEQ(vector<TaskTemplate> newCoorTEQ)
 {
-    TaskExecutionQueue = NewCoorTEQ;
+    TaskExecutionQueue = newCoorTEQ;
+}
+
+/*
+ * 返回任务执行列表长度
+ */
+int crobot::getTaskExecutionQueueLength()
+{
+    return TaskExecutionQueue.size();
 }

@@ -404,7 +404,7 @@ void ccoordinatecommunication::readNewCoorTEQ()
             GlobalNewCoorTEQ0_1.clear();
             convarNCQ0_1.notify_all();
         }
-        else if(!GlobalNewCoorTEQ2_1.empty())
+        if(!GlobalNewCoorTEQ2_1.empty())
         {
             unique_lock<mutex> lck2_1(TEQrw2_1);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ2_1);
@@ -427,7 +427,7 @@ void ccoordinatecommunication::readNewCoorTEQ()
             GlobalNewCoorTEQ1_2.clear();
             convarNCQ1_2.notify_all();
         }
-        else if(!GlobalNewCoorTEQ3_2.empty())
+        if(!GlobalNewCoorTEQ3_2.empty())
         {
             unique_lock<mutex> lck3_2(TEQrw3_2);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ3_2);
@@ -450,7 +450,7 @@ void ccoordinatecommunication::readNewCoorTEQ()
             GlobalNewCoorTEQ2_3.clear();
             convarNCQ2_3.notify_all();
         }
-        else if(!GlobalNewCoorTEQ4_3.empty())
+        if(!GlobalNewCoorTEQ4_3.empty())
         {
             unique_lock<mutex> lck4_3(TEQrw4_3);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ4_3);
@@ -473,7 +473,7 @@ void ccoordinatecommunication::readNewCoorTEQ()
             GlobalNewCoorTEQ3_4.clear();
             convarNCQ3_4.notify_all();
         }
-        else if(!GlobalNewCoorTEQ5_4.empty())
+        if(!GlobalNewCoorTEQ5_4.empty())
         {
             unique_lock<mutex> lck5_4(TEQrw5_4);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ5_4);
@@ -551,7 +551,7 @@ void ccoordinatecommunication::checkObjectNewCoorTEQ()
             }
             GlobalNewCoorTEQ0_1.clear();
         }
-        else if (!GlobalNewCoorTEQ4_3.empty())
+        if (!GlobalNewCoorTEQ4_3.empty())
         {
             unique_lock<mutex> lck4_3(TEQrw4_3);
             while(!GloNewCoorTEQFlag4_3)
@@ -575,7 +575,7 @@ void ccoordinatecommunication::checkObjectNewCoorTEQ()
             }
             GlobalNewCoorTEQ1_2.clear();
         }
-        else if (!GlobalNewCoorTEQ5_4.empty())
+        if (!GlobalNewCoorTEQ5_4.empty())
         {
             unique_lock<mutex> lck5_4(TEQrw5_4);
             while(!GloNewCoorTEQFlag5_4)

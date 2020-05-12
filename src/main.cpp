@@ -79,6 +79,18 @@ bool GloConFlag3_2 = false; //全局标志，Robot[3]进行协调，Robot[3]向R
 bool GloConFlag4_3 = false; //全局标志，Robot[4]进行协调，Robot[4]向Robot[3]交换任务，Robot[3]任务执行队列已存入
 bool GloConFlag5_4 = false; //全局标志，Robot[5]进行协调，Robot[5]向Robot[4]交换任务，Robot[4]任务执行队列已存入
 
+//多机器人协调全局任务执行队列
+vector<TaskTemplate> GlobalTEQ0_1;  //全局任务执行队列，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
+vector<TaskTemplate> GlobalTEQ1_2;  //全局任务执行队列，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
+vector<TaskTemplate> GlobalTEQ2_3;  //全局任务执行队列，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
+vector<TaskTemplate> GlobalTEQ3_4;  //全局任务执行队列，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
+vector<TaskTemplate> GlobalTEQ4_5;  //全局任务执行队列，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
+vector<TaskTemplate> GlobalTEQ1_0;  //全局任务执行队列，Robot[1]向Robot[0]写，Robot[0]向Robot[1]读
+vector<TaskTemplate> GlobalTEQ2_1;  //全局任务执行队列，Robot[2]向Robot[1]写，Robot[1]向Robot[2]读
+vector<TaskTemplate> GlobalTEQ3_2;  //全局任务执行队列，Robot[3]向Robot[2]写，Robot[2]向Robot[3]读
+vector<TaskTemplate> GlobalTEQ4_3;  //全局任务执行队列，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
+vector<TaskTemplate> GlobalTEQ5_4;  //全局任务执行队列，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
+
 //多机器人协调NewCoorTEQ刷新标志位
 bool GloNewCoorTEQFlag0_1 = false; //全局标志，Robot[0]已发送NewCoorTEQ，Robot[1]可读，true为已经读入
 bool GloNewCoorTEQFlag1_2 = false; //全局标志，Robot[1]已发送NewCoorTEQ，Robot[2]可读
@@ -90,6 +102,18 @@ bool GloNewCoorTEQFlag2_1 = false; //全局标志，Robot[2]已发送NewCoorTEQ�
 bool GloNewCoorTEQFlag3_2 = false; //全局标志，Robot[3]已发送NewCoorTEQ，Robot[2]可读
 bool GloNewCoorTEQFlag4_3 = false; //全局标志，Robot[4]已发送NewCoorTEQ，Robot[3]可读
 bool GloNewCoorTEQFlag5_4 = false; //全局标志，Robot[5]已发送NewCoorTEQ，Robot[4]可读
+
+//多机器人协调NewCoorTEQ读写互斥量
+mutex NewCoorTEQrw0_1; //互斥量，线程阻塞锁，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
+mutex NewCoorTEQrw1_2; //互斥量，线程阻塞锁，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
+mutex NewCoorTEQrw2_3; //互斥量，线程阻塞锁，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
+mutex NewCoorTEQrw3_4; //互斥量，线程阻塞锁，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
+mutex NewCoorTEQrw4_5; //互斥量，线程阻塞锁，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
+mutex NewCoorTEQrw1_0; //互斥量，线程阻塞锁，Robot[1]向Robot[0]写，Robot[0]向Robot[1]读
+mutex NewCoorTEQrw2_1; //互斥量，线程阻塞锁，Robot[2]向Robot[1]写，Robot[1]向Robot[2]读
+mutex NewCoorTEQrw3_2; //互斥量，线程阻塞锁，Robot[3]向Robot[2]写，Robot[2]向Robot[3]读
+mutex NewCoorTEQrw4_3; //互斥量，线程阻塞锁，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
+mutex NewCoorTEQrw5_4; //互斥量，线程阻塞锁，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
 
 //多机器人协调NewCoorTEQ刷新条件变量
 condition_variable convarNCQ0_1;    //条件变量，Robot[1]读取Robot[0]发送的NewCoorTEQ
@@ -105,18 +129,6 @@ condition_variable convarNCQ5_4;    //条件变量，Robot[4]读取Robot[5]发�
 
 //多机器人协调全局协调状态
 vector<bool> GlobalCoorStatus;  //全局协调状态
-
-//多机器人协调全局任务执行队列
-vector<TaskTemplate> GlobalTEQ0_1;  //全局任务执行队列，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
-vector<TaskTemplate> GlobalTEQ1_2;  //全局任务执行队列，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
-vector<TaskTemplate> GlobalTEQ2_3;  //全局任务执行队列，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
-vector<TaskTemplate> GlobalTEQ3_4;  //全局任务执行队列，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
-vector<TaskTemplate> GlobalTEQ4_5;  //全局任务执行队列，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
-vector<TaskTemplate> GlobalTEQ1_0;  //全局任务执行队列，Robot[1]向Robot[0]写，Robot[0]向Robot[1]读
-vector<TaskTemplate> GlobalTEQ2_1;  //全局任务执行队列，Robot[2]向Robot[1]写，Robot[1]向Robot[2]读
-vector<TaskTemplate> GlobalTEQ3_2;  //全局任务执行队列，Robot[3]向Robot[2]写，Robot[2]向Robot[3]读
-vector<TaskTemplate> GlobalTEQ4_3;  //全局任务执行队列，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
-vector<TaskTemplate> GlobalTEQ5_4;  //全局任务执行队列，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
 
 //多机器人协调全局NewCoorTEQ
 vector<TaskTemplate> GlobalNewCoorTEQ0_1;  //全局NewCoorTEQ，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
@@ -430,7 +442,7 @@ int main()
         {
             //打印分配情况
             cout << "**********************************************************************" << endl;
-            cout << "所有机器人分配情况" << endl;
+            cout << "所有机器人竞拍算法分配情况" << endl;
             float ValueSum = 0; //价值总和
             for (int i = 0; i < ROBOTNUM; i++)
             {
@@ -456,11 +468,6 @@ int main()
         {
             cout << "***********************机器人分配情况不一致！*************************" << endl;
         }
-
-        //多机器人任务协调策略(单线程整体调度系统，集中式策略)
-        //
-        //
-        //
 
         //返回剩余任务
         ctasklist * TaskList2 = new ctasklist;  //定义新的任务列表，接收剩余任务

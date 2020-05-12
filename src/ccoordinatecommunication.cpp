@@ -304,7 +304,8 @@ void ccoordinatecommunication::writeTEQ()
     {
     case 0:
     {
-        unique_lock<mutex> lck1_0(TEQrw0_1); 
+        unique_lock<mutex> lck0_1(TEQrw0_1);
+        unique_lock<mutex> lckNCT0_1(NewCoorTEQrw0_1);
         GlobalTEQ0_1 = CurrentRobot->setTaskExecutionQueue();  //写函数
         GlobalNewCoorTEQ0_1 = CurrentRobot->setNewCoorTEQ(0); //写函数
         break;
@@ -315,6 +316,8 @@ void ccoordinatecommunication::writeTEQ()
         //robot[1]向robot[0]和robot[2]写数据，robot[0]和robot[2]进行协调
         unique_lock<mutex> lck1_0(TEQrw1_0);
         unique_lock<mutex> lck1_2(TEQrw1_2);
+        unique_lock<mutex> lckNCT1_0(NewCoorTEQrw1_0);
+        unique_lock<mutex> lckNCT1_2(NewCoorTEQrw1_2);
         GlobalTEQ1_0 = CurrentRobot->setTaskExecutionQueue();  //写函数
         GlobalTEQ1_2 = CurrentRobot->setTaskExecutionQueue();  //写函数
         GlobalNewCoorTEQ1_0 = CurrentRobot->setNewCoorTEQ(0);  //写函数
@@ -327,6 +330,8 @@ void ccoordinatecommunication::writeTEQ()
         //robot[2]向robot[1]和robot[3]写数据，robot[1]和robot[3]进行协调
         unique_lock<mutex> lck2_1(TEQrw2_1);
         unique_lock<mutex> lck2_3(TEQrw2_3);
+        unique_lock<mutex> lckNCT2_1(NewCoorTEQrw2_1);
+        unique_lock<mutex> lckNCT2_3(NewCoorTEQrw2_3);
         GlobalTEQ2_1 = CurrentRobot->setTaskExecutionQueue();  //写函数
         GlobalTEQ2_3 = CurrentRobot->setTaskExecutionQueue();  //写函数
         GlobalNewCoorTEQ2_1 = CurrentRobot->setNewCoorTEQ(0);  //写函数
@@ -339,6 +344,8 @@ void ccoordinatecommunication::writeTEQ()
         //robot3向robot[2]和robot[4]写数据，robot[2]和robot[4]进行协调
         unique_lock<mutex> lck3_2(TEQrw3_2);
         unique_lock<mutex> lck3_4(TEQrw3_4);
+        unique_lock<mutex> lckNCT3_2(NewCoorTEQrw3_2);
+        unique_lock<mutex> lckNCT3_4(NewCoorTEQrw3_4);
         GlobalTEQ3_2 = CurrentRobot->setTaskExecutionQueue();  //写函数
         GlobalTEQ3_4 = CurrentRobot->setTaskExecutionQueue();  //写函数
         GlobalNewCoorTEQ3_2 = CurrentRobot->setNewCoorTEQ(0);  //写函数
@@ -351,6 +358,8 @@ void ccoordinatecommunication::writeTEQ()
         //robot4向robot[3]和robot[5]写数据，robot[3]和robot[5]进行协调
         unique_lock<mutex> lck4_3(TEQrw4_3);
         unique_lock<mutex> lck4_5(TEQrw4_5);
+        unique_lock<mutex> lckNCT4_3(NewCoorTEQrw4_3);
+        unique_lock<mutex> lckNCT4_5(NewCoorTEQrw4_5);
         GlobalTEQ4_3 = CurrentRobot->setTaskExecutionQueue();  //写函数
         GlobalTEQ4_5 = CurrentRobot->setTaskExecutionQueue();  //写函数
         GlobalNewCoorTEQ4_3 = CurrentRobot->setNewCoorTEQ(0);  //写函数
@@ -362,6 +371,7 @@ void ccoordinatecommunication::writeTEQ()
     {
         //robot5向robot[4]写数据，robot[4]进行协调
         unique_lock<mutex> lck5_4(TEQrw5_4);
+        unique_lock<mutex> lckNCT5_4(NewCoorTEQrw5_4);
         GlobalTEQ5_4 = CurrentRobot->setTaskExecutionQueue();  //写函数
         GlobalNewCoorTEQ5_4 = CurrentRobot->setNewCoorTEQ(0);  //写函数
         break;    
@@ -383,7 +393,7 @@ void ccoordinatecommunication::readNewCoorTEQ()
     {
         if (!GlobalNewCoorTEQ1_0.empty())
         {
-            unique_lock<mutex> lck1_0(TEQrw1_0);
+            unique_lock<mutex> lck1_0(NewCoorTEQrw1_0);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ1_0);
             GloNewCoorTEQFlag1_0 = true;
             ++NewCoorTEQNumber;
@@ -397,8 +407,10 @@ void ccoordinatecommunication::readNewCoorTEQ()
     {
         if (!GlobalNewCoorTEQ0_1.empty())
         {
-            unique_lock<mutex> lck0_1(TEQrw0_1);
+            unique_lock<mutex> lck0_1(NewCoorTEQrw0_1);
+            unique_lock<mutex> lck1_2(TEQrw1_2);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ0_1);
+            GlobalTEQ1_2 = CurrentRobot->setTaskExecutionQueue();  //写函数
             GloNewCoorTEQFlag0_1 = true;
             ++NewCoorTEQNumber;
             GlobalNewCoorTEQ0_1.clear();
@@ -406,8 +418,10 @@ void ccoordinatecommunication::readNewCoorTEQ()
         }
         if(!GlobalNewCoorTEQ2_1.empty())
         {
-            unique_lock<mutex> lck2_1(TEQrw2_1);
+            unique_lock<mutex> lck2_1(NewCoorTEQrw2_1);
+            unique_lock<mutex> lckNCT1_0(NewCoorTEQrw1_0);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ2_1);
+            GlobalTEQ1_0 = CurrentRobot->setTaskExecutionQueue();  //写函数
             GloNewCoorTEQFlag2_1 = true;
             ++NewCoorTEQNumber;
             GlobalNewCoorTEQ2_1.clear();
@@ -420,8 +434,10 @@ void ccoordinatecommunication::readNewCoorTEQ()
     {
         if (!GlobalNewCoorTEQ1_2.empty())
         {
-            unique_lock<mutex> lck1_2(TEQrw1_2);
+            unique_lock<mutex> lck1_2(NewCoorTEQrw1_2);
+            unique_lock<mutex> lck2_3(TEQrw2_3);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ1_2);
+            GlobalTEQ2_3 = CurrentRobot->setTaskExecutionQueue();  //写函数
             GloNewCoorTEQFlag1_2 = true;
             ++NewCoorTEQNumber;
             GlobalNewCoorTEQ1_2.clear();
@@ -429,8 +445,10 @@ void ccoordinatecommunication::readNewCoorTEQ()
         }
         if(!GlobalNewCoorTEQ3_2.empty())
         {
-            unique_lock<mutex> lck3_2(TEQrw3_2);
+            unique_lock<mutex> lck3_2(NewCoorTEQrw3_2);
+            unique_lock<mutex> lck2_1(TEQrw2_1);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ3_2);
+            GlobalTEQ2_1 = CurrentRobot->setTaskExecutionQueue();  //写函数
             GloNewCoorTEQFlag3_2 = true;
             ++NewCoorTEQNumber;
             GlobalNewCoorTEQ3_2.clear();
@@ -443,8 +461,10 @@ void ccoordinatecommunication::readNewCoorTEQ()
     {
         if (!GlobalNewCoorTEQ2_3.empty())
         {
-            unique_lock<mutex> lck2_3(TEQrw2_3);
+            unique_lock<mutex> lck2_3(NewCoorTEQrw2_3);
+            unique_lock<mutex> lck3_4(TEQrw3_4);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ2_3);
+            GlobalTEQ3_4 = CurrentRobot->setTaskExecutionQueue();  //写函数
             GloNewCoorTEQFlag2_3 = true;
             ++NewCoorTEQNumber;
             GlobalNewCoorTEQ2_3.clear();
@@ -452,8 +472,10 @@ void ccoordinatecommunication::readNewCoorTEQ()
         }
         if(!GlobalNewCoorTEQ4_3.empty())
         {
-            unique_lock<mutex> lck4_3(TEQrw4_3);
+            unique_lock<mutex> lck4_3(NewCoorTEQrw4_3);
+            unique_lock<mutex> lck3_2(TEQrw3_2);   
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ4_3);
+            GlobalTEQ3_2 = CurrentRobot->setTaskExecutionQueue();  //写函数
             GloNewCoorTEQFlag4_3 = true;
             ++NewCoorTEQNumber;
             GlobalNewCoorTEQ4_3.clear();
@@ -466,8 +488,10 @@ void ccoordinatecommunication::readNewCoorTEQ()
     {
         if (!GlobalNewCoorTEQ3_4.empty())
         {
-            unique_lock<mutex> lck3_4(TEQrw3_4);
+            unique_lock<mutex> lck3_4(NewCoorTEQrw3_4);
+            unique_lock<mutex> lck4_5(TEQrw4_5);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ3_4);
+            GlobalTEQ4_5 = CurrentRobot->setTaskExecutionQueue();  //写函数
             GloNewCoorTEQFlag3_4 = true;
             ++NewCoorTEQNumber;
             GlobalNewCoorTEQ3_4.clear();
@@ -475,8 +499,10 @@ void ccoordinatecommunication::readNewCoorTEQ()
         }
         if(!GlobalNewCoorTEQ5_4.empty())
         {
-            unique_lock<mutex> lck5_4(TEQrw5_4);
+            unique_lock<mutex> lck5_4(NewCoorTEQrw5_4);
+            unique_lock<mutex> lck4_3(TEQrw4_3);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ5_4);
+            GlobalTEQ4_3 = CurrentRobot->setTaskExecutionQueue();  //写函数
             GloNewCoorTEQFlag5_4 = true;
             ++NewCoorTEQNumber;
             GlobalNewCoorTEQ5_4.clear();
@@ -489,7 +515,7 @@ void ccoordinatecommunication::readNewCoorTEQ()
     {
         if (!GlobalNewCoorTEQ4_5.empty())
         {
-            unique_lock<mutex> lck4_5(TEQrw4_5);
+            unique_lock<mutex> lck4_5(NewCoorTEQrw4_5);
             CurrentRobot->updateNewCoorTEQ(GlobalNewCoorTEQ4_5);
             GloNewCoorTEQFlag4_5 = true;
             ++NewCoorTEQNumber;
@@ -516,7 +542,7 @@ void ccoordinatecommunication::checkObjectNewCoorTEQ()
     {
         if (!GlobalNewCoorTEQ2_1.empty())
         {
-            unique_lock<mutex> lck2_1(TEQrw2_1);
+            unique_lock<mutex> lck2_1(NewCoorTEQrw2_1);
             while(!GloNewCoorTEQFlag2_1)
             {
                 convarNCQ2_1.wait(lck2_1);
@@ -530,7 +556,7 @@ void ccoordinatecommunication::checkObjectNewCoorTEQ()
     {
         if (!GlobalNewCoorTEQ3_2.empty())
         {
-            unique_lock<mutex> lck3_2(TEQrw3_2);
+            unique_lock<mutex> lck3_2(NewCoorTEQrw3_2);
             while(!GloNewCoorTEQFlag3_2)
             {
                 convarNCQ3_2.wait(lck3_2);
@@ -544,7 +570,7 @@ void ccoordinatecommunication::checkObjectNewCoorTEQ()
     {
         if (!GlobalNewCoorTEQ0_1.empty())
         {
-            unique_lock<mutex> lck0_1(TEQrw0_1);
+            unique_lock<mutex> lck0_1(NewCoorTEQrw0_1);
             while(!GloNewCoorTEQFlag0_1)
             {
                 convarNCQ0_1.wait(lck0_1);
@@ -553,7 +579,7 @@ void ccoordinatecommunication::checkObjectNewCoorTEQ()
         }
         if (!GlobalNewCoorTEQ4_3.empty())
         {
-            unique_lock<mutex> lck4_3(TEQrw4_3);
+            unique_lock<mutex> lck4_3(NewCoorTEQrw4_3);
             while(!GloNewCoorTEQFlag4_3)
             {
                 convarNCQ4_3.wait(lck4_3);
@@ -568,7 +594,7 @@ void ccoordinatecommunication::checkObjectNewCoorTEQ()
     {
         if (!GlobalNewCoorTEQ1_2.empty())
         {
-            unique_lock<mutex> lck1_2(TEQrw1_2);
+            unique_lock<mutex> lck1_2(NewCoorTEQrw1_2);
             while(!GloNewCoorTEQFlag1_2)
             {
                 convarNCQ1_2.wait(lck1_2);
@@ -577,7 +603,7 @@ void ccoordinatecommunication::checkObjectNewCoorTEQ()
         }
         if (!GlobalNewCoorTEQ5_4.empty())
         {
-            unique_lock<mutex> lck5_4(TEQrw5_4);
+            unique_lock<mutex> lck5_4(NewCoorTEQrw5_4);
             while(!GloNewCoorTEQFlag5_4)
             {
                 convarNCQ5_4.wait(lck5_4);
@@ -592,7 +618,7 @@ void ccoordinatecommunication::checkObjectNewCoorTEQ()
     {
         if (!GlobalNewCoorTEQ2_3.empty())
         {
-            unique_lock<mutex> lck2_3(TEQrw2_3);
+            unique_lock<mutex> lck2_3(NewCoorTEQrw2_3);
             while(!GloNewCoorTEQFlag2_3)
             {
                 convarNCQ2_3.wait(lck2_3);
@@ -606,7 +632,7 @@ void ccoordinatecommunication::checkObjectNewCoorTEQ()
     {
         if (!GlobalNewCoorTEQ3_4.empty())
         {
-            unique_lock<mutex> lck3_4(TEQrw3_4);
+            unique_lock<mutex> lck3_4(NewCoorTEQrw3_4);
             while(!GloNewCoorTEQFlag3_4)
             {
                 convarNCQ3_4.wait(lck3_4);

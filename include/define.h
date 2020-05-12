@@ -86,6 +86,18 @@ extern bool GloConFlag3_2; //全局标志，Robot[3]进行协调，Robot[3]向Ro
 extern bool GloConFlag4_3; //全局标志，Robot[4]进行协调，Robot[4]向Robot[3]交换任务，Robot[3]任务执行队列已存入
 extern bool GloConFlag5_4; //全局标志，Robot[5]进行协调，Robot[5]向Robot[4]交换任务，Robot[4]任务执行队列已存入
 
+//多机器人协调全局任务执行队列
+extern vector<TaskTemplate> GlobalTEQ0_1;  //全局任务执行队列，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
+extern vector<TaskTemplate> GlobalTEQ1_2;  //全局任务执行队列，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
+extern vector<TaskTemplate> GlobalTEQ2_3;  //全局任务执行队列，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
+extern vector<TaskTemplate> GlobalTEQ3_4;  //全局任务执行队列，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
+extern vector<TaskTemplate> GlobalTEQ4_5;  //全局任务执行队列，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
+extern vector<TaskTemplate> GlobalTEQ1_0;  //全局任务执行队列，Robot[1]向Robot[0]写，Robot[0]向Robot[1]读
+extern vector<TaskTemplate> GlobalTEQ2_1;  //全局任务执行队列，Robot[2]向Robot[1]写，Robot[1]向Robot[2]读
+extern vector<TaskTemplate> GlobalTEQ3_2;  //全局任务执行队列，Robot[3]向Robot[2]写，Robot[2]向Robot[3]读
+extern vector<TaskTemplate> GlobalTEQ4_3;  //全局任务执行队列，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
+extern vector<TaskTemplate> GlobalTEQ5_4;  //全局任务执行队列，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
+
 //多机器人协调NewCoorTEQ刷新标志位
 extern bool GloNewCoorTEQFlag0_1; //全局标志，Robot[0]已发送NewCoorTEQ，Robot[1]可读
 extern bool GloNewCoorTEQFlag1_2; //全局标志，Robot[1]已发送NewCoorTEQ，Robot[2]可读
@@ -97,6 +109,18 @@ extern bool GloNewCoorTEQFlag2_1; //全局标志，Robot[2]已发送NewCoorTEQ�
 extern bool GloNewCoorTEQFlag3_2; //全局标志，Robot[3]已发送NewCoorTEQ，Robot[2]可读
 extern bool GloNewCoorTEQFlag4_3; //全局标志，Robot[4]已发送NewCoorTEQ，Robot[3]可读
 extern bool GloNewCoorTEQFlag5_4; //全局标志，Robot[5]已发送NewCoorTEQ，Robot[4]可读
+
+//多机器人协调NewCoorTEQ读写互斥量
+extern mutex NewCoorTEQrw0_1; //互斥量，线程阻塞锁，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
+extern mutex NewCoorTEQrw1_2; //互斥量，线程阻塞锁，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
+extern mutex NewCoorTEQrw2_3; //互斥量，线程阻塞锁，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
+extern mutex NewCoorTEQrw3_4; //互斥量，线程阻塞锁，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
+extern mutex NewCoorTEQrw4_5; //互斥量，线程阻塞锁，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
+extern mutex NewCoorTEQrw1_0; //互斥量，线程阻塞锁，Robot[1]向Robot[0]写，Robot[0]向Robot[1]读
+extern mutex NewCoorTEQrw2_1; //互斥量，线程阻塞锁，Robot[2]向Robot[1]写，Robot[1]向Robot[2]读
+extern mutex NewCoorTEQrw3_2; //互斥量，线程阻塞锁，Robot[3]向Robot[2]写，Robot[2]向Robot[3]读
+extern mutex NewCoorTEQrw4_3; //互斥量，线程阻塞锁，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
+extern mutex NewCoorTEQrw5_4; //互斥量，线程阻塞锁，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
 
 //多机器人协调NewCoorTEQ刷新条件变量
 extern condition_variable convarNCQ0_1;    //条件变量，Robot[1]读取Robot[0]发送的NewCoorTEQ
@@ -113,17 +137,7 @@ extern condition_variable convarNCQ5_4;    //条件变量，Robot[4]读取Robot[
 //多机器人协调全局协调状态
 extern vector<bool> GlobalCoorStatus;  //全局协调状态
 
-//多机器人协调全局任务执行队列
-extern vector<TaskTemplate> GlobalTEQ0_1;  //全局任务执行队列，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读
-extern vector<TaskTemplate> GlobalTEQ1_2;  //全局任务执行队列，Robot[1]向Robot[2]写，Robot[2]向Robot[1]读
-extern vector<TaskTemplate> GlobalTEQ2_3;  //全局任务执行队列，Robot[2]向Robot[3]写，Robot[3]向Robot[2]读
-extern vector<TaskTemplate> GlobalTEQ3_4;  //全局任务执行队列，Robot[3]向Robot[4]写，Robot[4]向Robot[3]读
-extern vector<TaskTemplate> GlobalTEQ4_5;  //全局任务执行队列，Robot[4]向Robot[5]写，Robot[5]向Robot[4]读
-extern vector<TaskTemplate> GlobalTEQ1_0;  //全局任务执行队列，Robot[1]向Robot[0]写，Robot[0]向Robot[1]读
-extern vector<TaskTemplate> GlobalTEQ2_1;  //全局任务执行队列，Robot[2]向Robot[1]写，Robot[1]向Robot[2]读
-extern vector<TaskTemplate> GlobalTEQ3_2;  //全局任务执行队列，Robot[3]向Robot[2]写，Robot[2]向Robot[3]读
-extern vector<TaskTemplate> GlobalTEQ4_3;  //全局任务执行队列，Robot[4]向Robot[3]写，Robot[3]向Robot[4]读
-extern vector<TaskTemplate> GlobalTEQ5_4;  //全局任务执行队列，Robot[5]向Robot[4]写，Robot[4]向Robot[5]读
+
 
 //竞拍算法全局价格
 extern vector<float> GlobalPrice0_1;   //全局价格，Robot[0]向Robot[1]写，Robot[1]向Robot[0]读

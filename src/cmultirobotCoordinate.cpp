@@ -53,22 +53,27 @@ float cmultirobotCoordinate::calTaskCoorUtility(vector<TaskTemplate> tmpCoorTEQ)
 {
     vector<TaskTemplate> tmp = tmpCoorTEQ;
     float CoorValue1 = 0;
-    for(int i = 1; i <= CoorLength; ++i)
+    for(int i = 1; i <= CoorLength + 1; ++i)
     {
-        CoorValue1 += sqrt(pow((tmp.end() - 1 - i) -> EndPoint[0] - (tmp.end() - 1 - i) -> BeginPoint[0], 2) +
-                pow((tmp.end() - 1 - i) -> EndPoint[1] - (tmp.end() - 1 - i) -> BeginPoint[1], 2)) +
-                sqrt(pow((tmp.end() - 1 - i) -> EndPoint[0] - (tmp.end() - 1 - (i - 1)) -> BeginPoint[0], 2) +
-                pow((tmp.end() - 1 - i) -> EndPoint[1] - (tmp.end() - 1 - (i - 1)) -> BeginPoint[1], 2));        
+        // CoorValue1 += sqrt(pow((tmp.end() - 1 - i) -> EndPoint[0] - (tmp.end() - 1 - i) -> BeginPoint[0], 2) +
+        //         pow((tmp.end() - 1 - i) -> EndPoint[1] - (tmp.end() - 1 - i) -> BeginPoint[1], 2)) +
+        //         sqrt(pow((tmp.end() - 1 - i) -> EndPoint[0] - (tmp.end() - 1 - (i - 1)) -> BeginPoint[0], 2) +
+        //         pow((tmp.end() - 1 - i) -> EndPoint[1] - (tmp.end() - 1 - (i - 1)) -> BeginPoint[1], 2)); 
+
+        CoorValue1 += sqrt(pow((tmp.end() - i) -> EndPoint[0] - (tmp.end() - i) -> BeginPoint[0], 2) +
+                pow((tmp.end() - i) -> EndPoint[1] - (tmp.end() - i) -> BeginPoint[1], 2)) +
+                sqrt(pow((tmp.end() - i) -> EndPoint[0] - (tmp.end() - (i - 1)) -> BeginPoint[0], 2) +
+                pow((tmp.end() - i) -> EndPoint[1] - (tmp.end() - (i - 1)) -> BeginPoint[1], 2));     
     }
 
-    float CoorValue2 = sqrt(pow((tmp.end() - 1 - (CoorLength + 1)) -> EndPoint[0] - (tmp.end() - 1 - CoorLength) -> BeginPoint[0], 2) +
-                pow((tmp.end() - 1 - (CoorLength + 1)) -> EndPoint[1] - (tmp.end() - 1 - CoorLength) -> BeginPoint[1], 2));
+    //float CoorValue2 = sqrt(pow((tmp.end() - 1 - (CoorLength + 1)) -> EndPoint[0] - (tmp.end() - 1 - CoorLength) -> BeginPoint[0], 2) +
+    //            pow((tmp.end() - 1 - (CoorLength + 1)) -> EndPoint[1] - (tmp.end() - 1 - CoorLength) -> BeginPoint[1], 2));
 
     //float result = 1 / (CoorValue1 + CoorValue2);
 
-    float result = CoorValue1 + CoorValue2;
+    float result = CoorValue1;
     
-    //cout << "对象机器人:" << Robot_No  << "路程：" << CoorValue1 + CoorValue2 << endl;
+    cout << "对象机器人:" << Robot_No  << "路程：" << CoorValue1 << endl;
     return result;
 }
 
@@ -87,7 +92,7 @@ float cmultirobotCoordinate::calTaskCurrentUtility(vector<TaskTemplate> tmpCurre
 
     float result = CoorValue;
 
-    //cout << "当前机器人:" << Robot_No  << "路程：" << CoorValue<< endl;
+    cout << "当前机器人:" << Robot_No  << "路程：" << CoorValue<< endl;
 
     return result;
 }

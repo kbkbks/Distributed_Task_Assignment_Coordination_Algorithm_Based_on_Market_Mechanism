@@ -34,7 +34,7 @@ void ccoordinatecommunication::enterCoordinate()
 {
     int CurrentTEQLength = CurrentRobot->getTaskExecutionQueueLength();
     //判断当前任务执行队列是否大于协调长度
-    if(CurrentTEQLength > 2 + 1)
+    if(CurrentTEQLength > COORDINATE_LENGTH + 1)
     {
         while(1)
         {
@@ -68,7 +68,7 @@ void ccoordinatecommunication::enterCoordinate()
 
                     //协调算法
                     cout << "机器人" << CurrentRobot->sendRobotNum() << "协调算法" << endl;
-                    CurrentRobot->multirobotCoordination(2);
+                    CurrentRobot->multirobotCoordination(COORDINATE_LENGTH);
 
                     //写CurrentTEQ和CoorTEQ
                     writeTEQ();

@@ -12,6 +12,7 @@ void readTaskExecutionQueue(crobot * Robot);
 crobot::crobot():AllRobotPrice(ROBOTNUM), AllRobotBidder(ROBOTNUM), TaskExecutionQueueNum(0), CoorCommunicateLength(0), CoorCommunicateTime(0)
 {
     CoorCommunicateWidth = 2;
+    maxValuePosition = -1;
 }
 
 /*
@@ -1965,7 +1966,14 @@ void crobot::updadteRobotLocation(ctasklist * tasklist)
 void crobot::savetoTaskExecutionQueue(ctasklist * tasklist)
 {
     TaskTemplate * tmp = tasklist->sendTaskQueue(AssignedTask);
-    TaskExecutionQueue.insert(TaskExecutionQueue.begin() + maxValuePosition, *tmp);
+    if(maxValuePosition != -1)
+    {
+        TaskExecutionQueue.insert(TaskExecutionQueue.begin() + maxValuePosition, *tmp);
+    }
+    else
+    {
+        TaskExecutionQueue.push_back(*tmp);
+    }
 }
 
 /*
@@ -2354,4 +2362,26 @@ void crobot::updateNewCoorTEQ(vector<TaskTemplate> newCoorTEQ)
 int crobot::getTaskExecutionQueueLength()
 {
     return TaskExecutionQueue.size();
+}
+
+/*
+ * 返回TaskExecutionQueue执行总距离
+ */
+float crobot::sendTEQDistance()
+{
+    float tmpDistance = 0;
+    tmpDistance = sqrt(pow(TaskExecutionQueue[0].BeginPoint[0] - RobotLocation[0], 2) + 
+        pow(TaskExecutionQueue[0].BeginPoint[1] - RobotLocation[1], 2)) +
+        sqrt(pow(TaskExecutionQueue[0].EndPoint[0] - TaskExecutionQueue[0].BeginPoint[0], 2) +
+        pow(TaskExecutionQueue[0].EndPoint[1] - TaskExecutionQueue[0].BeginPoint[1], 2));
+    for (int i = 1; i < TaskExecutionQueueNum; i++)
+    {
+        tmpDistance = sqrt(pow(TaskExecutionQueue[i].BeginPoint[0] - TaskExecutionQueue[i - 1].EndPoint[0], 2) + 
+            pow(TaskExecutionQueue[i].BeginPoint[1] - TaskExecutionQueue[i - 1].EndPoint[1], 2)) +
+            sqrt(pow(TaskExecutionQueue[i].EndPoint[0] - TaskExecutionQueue[i].BeginPoint[0], 2) +
+            pow(TaskExecutionQueue[i].EndPoint[1] - TaskExecutionQueue[i].BeginPoint[1], 2)); 
+        tmpDistance += tmpDistance;    //累积价值
+    }
+
+    return tmpDistance;
 }

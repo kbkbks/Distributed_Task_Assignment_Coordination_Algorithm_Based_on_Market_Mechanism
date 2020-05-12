@@ -241,6 +241,12 @@ public:
      */
     int getTaskExecutionQueueLength();
 
+    /*
+     * 返回TaskExecutionQueue执行总距离
+     */
+    float sendTEQDistance();
+    
+
 private:
     //常规任务分配变量
     float RobotLocation[2]; //机器人位置

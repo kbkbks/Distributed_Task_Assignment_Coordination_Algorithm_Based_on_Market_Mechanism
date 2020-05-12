@@ -454,14 +454,20 @@ int main()
             //打印所有机器人任务执行队列的总价值
             cout << "所有机器人任务执行队列价值：" << endl;
             float TotalTaskExecutionQueueValueSum = 0;  //所有机器人价值总和
+            float TotalTaskExecutionQueueDisSum = 0;    //所有机器人TEQ执行距离总和
             for (int i = 0; i < ROBOTNUM; i++)
             {
                 float TotalTaskExecutionQueueValue = 0;
+                float TotalTaskExecutionQueueDistance = 0;
                 TotalTaskExecutionQueueValue = Robot[i].sendTaskExecutionQueueValue();
+                TotalTaskExecutionQueueDistance = Robot[i].sendTEQDistance();
                 TotalTaskExecutionQueueValueSum += TotalTaskExecutionQueueValue;
+                TotalTaskExecutionQueueDisSum += TotalTaskExecutionQueueDistance;
                 cout << "机器人" << Robot[i].sendRobotNum() << "任务执行队列总价值" << TotalTaskExecutionQueueValue << endl;
+                cout << "机器人" << Robot[i].sendRobotNum() << "任务执行队列整体距离" << TotalTaskExecutionQueueDistance << endl;
             }
             cout << "所有机器人任务执行队列价值总和为：" << " " << TotalTaskExecutionQueueValueSum << endl; 
+            cout << "所有机器人任务执行队列执行距离总和为：" << " " << TotalTaskExecutionQueueDisSum << endl; 
             cout << "**********************************************************************" << endl;
         }
         else

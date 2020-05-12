@@ -24,7 +24,7 @@ void cmultirobotCoordinate::taskCoordinate()
         *(tmpCoorTEQ.end() - 1 - i) = *(CurrentTEQ.end() - 1);
         *(tmpCurrentTEQ.end() - 1) = tmpTask;
         float TaskCoorValue = calTaskCoorUtility(tmpCoorTEQ) + calTaskCurrentUtility(tmpCurrentTEQ);
-        if (TaskCoorValue > MaxTaskCoorValue)
+        if (TaskCoorValue < MaxTaskCoorValue)
         {
             MaxTaskCoorValue = TaskCoorValue;
             CoordinateTask = i; //记录协调任务序号
@@ -64,8 +64,11 @@ float cmultirobotCoordinate::calTaskCoorUtility(vector<TaskTemplate> tmpCoorTEQ)
     float CoorValue2 = sqrt(pow((tmp.end() - 1 - (CoorLength + 1)) -> EndPoint[0] - (tmp.end() - 1 - CoorLength) -> BeginPoint[0], 2) +
                 pow((tmp.end() - 1 - (CoorLength + 1)) -> EndPoint[1] - (tmp.end() - 1 - CoorLength) -> BeginPoint[1], 2));
 
-    float result = 1 / (CoorValue1 + CoorValue2);
+    //float result = 1 / (CoorValue1 + CoorValue2);
 
+    float result = CoorValue1 + CoorValue2;
+    
+    //cout << "对象机器人:" << Robot_No  << "路程：" << CoorValue1 + CoorValue2 << endl;
     return result;
 }
 
@@ -80,7 +83,12 @@ float cmultirobotCoordinate::calTaskCurrentUtility(vector<TaskTemplate> tmpCurre
             sqrt(pow((tmp.end() - 1) -> EndPoint[0] - (tmp.end() - 1) -> BeginPoint[0], 2) +
             pow((tmp.end() - 1) -> EndPoint[1] - (tmp.end() - 1) -> BeginPoint[1], 2));
 
-    float result = 1 / CoorValue;
+    //float result = 1 / CoorValue;
+
+    float result = CoorValue;
+
+    //cout << "当前机器人:" << Robot_No  << "路程：" << CoorValue<< endl;
+
     return result;
 }
 

@@ -101,8 +101,7 @@ void ccoordinatecommunication::enterCoordinate()
             {
                 muCoorStatus.unlock();
                 //cout << "协调条件不满足" << endl;
-
-                //sleep(1);
+                
             }
         }
     }

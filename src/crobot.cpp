@@ -117,7 +117,7 @@ void crobot::generateValueList(ctasklist * tasklist, int tasklist_num, float ran
 
     //机器人协调通信类，用于进入协调过程
     ccoordinatecommunication CoordinateCommunication(this);
-    CoordinateCommunication.enterCoordinate();
+    //CoordinateCommunication.enterCoordinate();
 
     //回收CoorTEQWidth内存
     deleteCoorTEQWidth();

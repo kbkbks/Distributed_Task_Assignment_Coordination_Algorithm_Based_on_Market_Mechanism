@@ -63,5 +63,10 @@
         "valarray": "cpp",
         "variant": "cpp"
     },
-    "editor.fontSize": 16
+    "editor.fontSize": 16,
+    "cpplint.lineLength": 150,
+    "cpplint.filters": [
+        "-build/include_subdir"
+    ]
+
 }

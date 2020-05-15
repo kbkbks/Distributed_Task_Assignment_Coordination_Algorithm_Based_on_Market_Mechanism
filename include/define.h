@@ -18,7 +18,7 @@
 
 #define ROBOTNUM 6  //机器人数量
 #define TASKPOINT 8 //任务点数量
-#define TASKCAPACITY 150  //任务点任务容量
+#define TASKCAPACITY 50  //任务点任务容量
 #define COORDINATE_LENGTH 3 //协调长度
 #define RAND_NUM rand() / double(RAND_MAX) / 100 //随机数， 0～0.01
 

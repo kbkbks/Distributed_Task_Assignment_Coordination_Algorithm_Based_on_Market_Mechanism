@@ -1,11 +1,13 @@
-#ifndef _CTASKPOINT_H_
-#define _CTASKPOINT_H_
+/*
+ # Copyright (c) 2019-2020 Xinyan Han. All rights reserved.
+ */
+#ifndef CTASKPOINT_H_
+#define CTASKPOINT_H_
 
 #include "define.h"
 
-class ctaskpoint
-{
-public:
+class ctaskpoint {
+ public:
     ctaskpoint() {}
     ~ctaskpoint() {}
 
@@ -24,8 +26,8 @@ public:
      */
     TaskTemplate sendTask(int i);
 
-private:
-    TaskTemplate * TaskRepository = new TaskTemplate[TASKCAPACITY];	//任务发布点存放的任务集合
+ private:
+    TaskTemplate * TaskRepository = new TaskTemplate[TASKCAPACITY];  // 任务发布点存放的任务集合
 };
 
-#endif  // !_CTASKPOINT_H_
+#endif  // CTASKPOINT_H_

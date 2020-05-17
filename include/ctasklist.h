@@ -1,11 +1,13 @@
-#ifndef _CTASKLIST_H_
-#define _CTASKLIST_H_
+/*
+ # Copyright (c) 2019-2020 Xinyan Han. All rights reserved.
+ */
+#ifndef  CTASKLIST_H_
+#define  CTASKLIST_H_
 #include "define.h"
 #include "ctaskpoint.h"
 
-class ctasklist
-{
-public:
+class ctasklist {
+ public:
     ctasklist();
     ~ctasklist() {}
 
@@ -34,10 +36,9 @@ public:
      */
     void getTask(TaskTemplate * residultask);
 
-private:
-    int TaskNumber; //任务数量(任务列表中)
-    vector<TaskTemplate> TaskQueue; //任务列表
-
+ private:
+    int TaskNumber;  // 任务数量(任务列表中)
+    vector<TaskTemplate> TaskQueue;  // 任务列表
 };
 
-#endif  // !_CTASKLIST_H_
+#endif  // CTASKLIST_H_

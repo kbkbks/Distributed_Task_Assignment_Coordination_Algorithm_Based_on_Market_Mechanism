@@ -1,12 +1,14 @@
-#ifndef _CROBOT_H_
-#define _CROBOT_H_
+/*
+ # Copyright (c) 2019-2020 Xinyan Han. All rights reserved.
+ */
+#ifndef CROBOT_H_
+#define CROBOT_H_
 
 #include "define.h"
 #include "ctasklist.h"
 
-class crobot
-{
-public:
+class crobot {
+ public:
     crobot();
     ~crobot() {}
 
@@ -245,37 +247,34 @@ public:
      * 返回TaskExecutionQueue执行总距离
      */
     float sendTEQDistance();
-    
 
-private:
-    //常规任务分配变量
-    float RobotLocation[2]; //机器人位置
-    int Robot_No;   //机器人编号
-    vector<float> ValueList;    //任务价值列表
-    vector<float> Price;    //任务价格
-    vector<int> Bidder; //竞拍机器人，其下标序号为任务序列
-    vector<vector<float>> AllRobotPrice;    //所有机器人的价格
-    vector<vector<int>> AllRobotBidder; //所有机器人的竞标者
-    int AssignedTask;   //机器人竞标的任务
-    float eps;  //松弛变量
-    vector<int> ResidualTask;   //剩余任务集，下标为任务序列
-    int ResidualNum;    //剩余任务数量
+ private:
+    // 常规任务分配变量
+    float RobotLocation[2];  // 机器人位置
+    int Robot_No;   // 机器人编号
+    vector<float> ValueList;    // 任务价值列表
+    vector<float> Price;    // 任务价格
+    vector<int> Bidder;  // 竞拍机器人，其下标序号为任务序列
+    vector<vector<float>> AllRobotPrice;    // 所有机器人的价格
+    vector<vector<int>> AllRobotBidder;  // 所有机器人的竞标者
+    int AssignedTask;   // 机器人竞标的任务
+    float eps;  // 松弛变量
+    vector<int> ResidualTask;   // 剩余任务集，下标为任务序列
+    int ResidualNum;    // 剩余任务数量
 
     //单机器人任务协调变量
-    vector<TaskTemplate> TaskExecutionQueue;    //机器人任务执行队列
-    vector<float> TaskExecutionQueueValue;  //任务执行队列价值
-    int TaskExecutionQueueNum;  //任务执行队列中任务数量
-    float maxValue; //价值最大的任务
-    int maxValuePosition;   //价值最大的下标
+    vector<TaskTemplate> TaskExecutionQueue;    // 机器人任务执行队列
+    vector<float> TaskExecutionQueueValue;  // 任务执行队列价值
+    int TaskExecutionQueueNum;  // 任务执行队列中任务数量
+    float maxValue;  // 价值最大的任务
+    int maxValuePosition;   // 价值最大的下标
 
     //多机器人任务协调变量
-    int CoorCommunicateLength;  //协调通信长度
-    int CoorCommunicateTime;    //协调通信次数
-    int CoorCommunicateWidth;   //协调通信范围，这里为邻接机器人，即为2
-    vector<TaskTemplate> * CoorTEQ; //协调对象任务执行队列数组，下标表示不同协调对象的TEQ
-    vector<TaskTemplate> * NewCoorTEQ;  //协调后对象新的任务执行队列数组，下标表示不同协调对象的TEQ
-    
+    int CoorCommunicateLength;  // 协调通信长度
+    int CoorCommunicateTime;    // 协调通信次数
+    int CoorCommunicateWidth;   // 协调通信范围，这里为邻接机器人，即为2
+    vector<TaskTemplate> * CoorTEQ;  // 协调对象任务执行队列数组，下标表示不同协调对象的TEQ
+    vector<TaskTemplate> * NewCoorTEQ;   // 协调后对象新的任务执行队列数组，下标表示不同协调对象的TEQ
 };
 
-
-#endif  // !_CROBOT_H_
+#endif  // CROBOT_H_

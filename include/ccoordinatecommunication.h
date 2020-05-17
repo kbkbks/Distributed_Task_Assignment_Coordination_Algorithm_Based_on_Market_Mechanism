@@ -1,14 +1,16 @@
-#ifndef _CCOORDINATECOMMUNICATION_H_
-#define _CCOORDINATECOMMUNICATION_H_
+/*
+ # Copyright (c) 2019-2020 Xinyan Han. All rights reserved.
+ */
+#ifndef CCOORDINATECOMMUNICATION_H_
+#define CCOORDINATECOMMUNICATION_H_
 
 #include "define.h"
 #include "crobot.h"
 
-class ccoordinatecommunication
-{
-public:
-    ccoordinatecommunication(crobot * Robot);
-    ~ccoordinatecommunication(){}
+class ccoordinatecommunication {
+ public:
+    explicit ccoordinatecommunication(crobot * Robot);
+    ~ccoordinatecommunication() {}
 
     /*
      * 机器人协调通信
@@ -38,7 +40,7 @@ public:
     /*
      * 写CoorTEQ
      */
-    void writeTEQ();    
+    void writeTEQ();
 
     /*
      * readNewCoorTEQ
@@ -51,13 +53,11 @@ public:
     void checkObjectNewCoorTEQ();
 
 
-private:
-    crobot * CurrentRobot; 
-    vector<bool> CoorStatus;    //协调状态
-    bool CurrentCoorStatus; //当前机器人协调状态
-    int NewCoorTEQNumber;   //读取NewCoorTEQ次数
-
-
+ private:
+    crobot * CurrentRobot;
+    vector<bool> CoorStatus;    // 协调状态
+    bool CurrentCoorStatus;  // 当前机器人协调状态
+    int NewCoorTEQNumber;   // 读取NewCoorTEQ次数
 };
 
-#endif // ! _CCOORDINATECOMMUNICATION_H_
+#endif  // CCOORDINATECOMMUNICATION_H_

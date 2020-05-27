@@ -244,6 +244,16 @@ class crobot {
     int getTaskExecutionQueueLength();
 
     /*
+     * 返回CoorTEQ总数
+     */
+    int getCoorCommunicateWidth();
+
+    /*
+    * 返回CoorTEQ长度
+    */
+    int getCoorTEQLength(int i);
+
+    /*
      * 返回TaskExecutionQueue执行总距离
      */
     float sendTEQDistance();

@@ -23,6 +23,11 @@ class ccoordinatecommunication {
     bool checkCoorStatus();
 
     /*
+     * 主动协调
+     */
+    void activeCoorProcess();
+
+    /*
      * 读协调状态，下标0为当前机器人协调状态，下标1和2按字典序存放邻接机器人协调状态
      */
     void readCoorStatus();
@@ -58,6 +63,7 @@ class ccoordinatecommunication {
     vector<bool> CoorStatus;    // 协调状态
     bool CurrentCoorStatus;  // 当前机器人协调状态
     int NewCoorTEQNumber;   // 读取NewCoorTEQ次数
+    unordered_map<int, bool> CoorTEQLengthLegality;   // CoorTEQ长度合法性
 };
 
 #endif  // CCOORDINATECOMMUNICATION_H_

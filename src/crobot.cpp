@@ -92,13 +92,16 @@ void crobot::generateValueList(ctasklist * tasklist, int tasklist_num, float ran
         }
     }
 
+#if !SINGLE_COORDINATE
     // 更新机器人位置坐标
-    // updadteRobotLocation(tasklist);
+    updadteRobotLocation(tasklist);
+#endif
 
     // 将中标的任务存入机器人任务执行队列
     savetoTaskExecutionQueue(tasklist);
     TaskExecutionQueueNum = TaskExecutionQueue.size();
 
+#if MULTIROBOT_COORDINATE
     // 将任务执行队列保存至全局变量，用于协调通信
     // 机器人异步读写线程，用于协调通信
     // 创建读写线程
@@ -114,6 +117,7 @@ void crobot::generateValueList(ctasklist * tasklist, int tasklist_num, float ran
 
     // 回收CoorTEQWidth内存
     deleteCoorTEQWidth();
+#endif
 
     /*
      * 以下整理剩余任务这部分代码从逻辑上讲应该归入主函数，在主线程中执行，不应该在子线程中执行，
@@ -138,12 +142,16 @@ void crobot::calculateValue(ctasklist * tasklist, int i) {
     TaskTemplate * TmpTask;   // 待计算价值的任务
     TmpTask = tasklist->sendTaskQueue(i);   // 取任务列表中的第i个任务，别名为TmpTask
 
+#if !SINGLE_COORDINATE
     // 常规直接计算任务价值
-    // GeneralCalculate(TmpTask);
-    // printValueList(i);
+    GeneralCalculate(TmpTask);
+    printValueList(i);
+#endif
 
+#if SINGLE_COORDINATE
     // 寻找使插入新任务后整体任务执行队列价值最高的插入点(机器人自协调)
     SelfCoordination(TmpTask);
+#endif
 }
 
 /*
@@ -1924,6 +1932,20 @@ void crobot::updateNewCoorTEQ(vector<TaskTemplate> newCoorTEQ) {
  */
 int crobot::getTaskExecutionQueueLength() {
     return TaskExecutionQueue.size();
+}
+
+/*
+ * 返回CoorTEQ总数
+ */
+int crobot::getCoorCommunicateWidth() {
+    return CoorCommunicateWidth;
+}
+
+/*
+ * 返回CoorTEQ长度
+ */
+int crobot::getCoorTEQLength(int i) {
+    return CoorTEQ[i].size();
 }
 
 /*

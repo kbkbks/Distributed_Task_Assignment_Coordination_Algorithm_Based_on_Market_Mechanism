@@ -33,8 +33,20 @@ ccoordinatecommunication::ccoordinatecommunication(crobot * Robot) : CurrentRobo
  */
 void ccoordinatecommunication::enterCoordinate() {
     int CurrentTEQLength = CurrentRobot->getTaskExecutionQueueLength();
+    // 计算CoorTEQ长度合法性
+    for (int i = 0; i < CurrentRobot->getCoorCommunicateWidth(); ++i) {
+        if (CurrentRobot->getCoorTEQLength(i) > COORDINATE_LENGTH + 1) {
+            CoorTEQLengthLegality[i] = true;    // 长度合法
+        } else {
+            CoorTEQLengthLegality[i] = false;   // 长度非法
+        }
+    }
+
     // 判断当前任务执行队列是否大于协调长度
     if (CurrentTEQLength > COORDINATE_LENGTH + 1) {
+        /*
+         * 被动协调while循环
+         */
         while (1) {
             // 读协调状态
             muCoorStatus.lock();
@@ -48,48 +60,20 @@ void ccoordinatecommunication::enterCoordinate() {
             if (Status == true) {
                 // 自身可协调，邻接机器人可协调，满足协调三规则
                 if (CurrentCoorStatus) {
-                    //锁协调状态
-                    for (auto iter = CoorStatus.begin(); iter != CoorStatus.end(); ++iter) {
-                        *iter = false;
-                    }
-                    writeCoorStatus();
-                    muCoorStatus.unlock();
-
-                    // 检查协调对象NewCoorTEQ刷新
-                    checkObjectNewCoorTEQ();
-
-                    // 读CoorTEQ
-                    readTEQ();
-
-                    //协调算法
-                    cout << "机器人" << CurrentRobot->sendRobotNum() << "协调算法" << endl;
-                    CurrentRobot->multirobotCoordination(COORDINATE_LENGTH);
-
-                    // 写CurrentTEQ和CoorTEQ
-                    writeTEQ();
-
-                    // 自身协调状态置false
-                    CurrentCoorStatus = false;
-
-                    //恢复协调状态
-                    muCoorStatus.lock();
-                    for (auto iter = CoorStatus.begin(); iter != CoorStatus.end(); ++iter) {
-                        *iter = true;
-                    }
-                    writeCoorStatus();
-                    muCoorStatus.unlock();
+                    // 主动协调
+                    activeCoorProcess();
                 } else {
                     muCoorStatus.unlock();
                     // cout << "当前机器人" << CurrentRobot->sendRobotNum() << "已完成协调" << endl;
                 }
-
-                // 机器人协调退出条件
-                if (NewCoorTEQNumber == (CoorStatus.size()-1)) {
-                    break;
-                }
             } else {
                 muCoorStatus.unlock();
                 // cout << "协调条件不满足" << endl;
+            }
+
+            // 机器人协调退出条件
+            if (NewCoorTEQNumber == (CoorStatus.size()-1) && CurrentCoorStatus == false) {
+                break;
             }
         }
     } else {
@@ -111,6 +95,42 @@ bool ccoordinatecommunication::checkCoorStatus() {
         }
     }
     return StatusGathered;
+}
+
+/*
+ * 主动协调
+ */
+void ccoordinatecommunication::activeCoorProcess() {
+    //锁协调状态
+    for (auto iter = CoorStatus.begin(); iter != CoorStatus.end(); ++iter) {
+        *iter = false;
+    }
+    writeCoorStatus();
+    muCoorStatus.unlock();
+
+    // 检查协调对象NewCoorTEQ刷新
+    checkObjectNewCoorTEQ();
+
+    // 读CoorTEQ
+    readTEQ();
+
+    //协调算法
+    cout << "机器人" << CurrentRobot->sendRobotNum() << "协调算法" << endl;
+    CurrentRobot->multirobotCoordination(COORDINATE_LENGTH);
+
+    // 写CurrentTEQ和CoorTEQ
+    writeTEQ();
+
+    // 自身协调状态置false
+    CurrentCoorStatus = false;
+
+    //恢复协调状态
+    muCoorStatus.lock();
+    for (auto iter = CoorStatus.begin(); iter != CoorStatus.end(); ++iter) {
+        *iter = true;
+    }
+    writeCoorStatus();
+    muCoorStatus.unlock();
 }
 
 /*

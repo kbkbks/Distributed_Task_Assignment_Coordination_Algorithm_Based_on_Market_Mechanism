@@ -45,7 +45,7 @@ void ccoordinatecommunication::enterCoordinate() {
     // 判断当前任务执行队列是否大于协调长度
     if (CurrentTEQLength > COORDINATE_LENGTH + 1) {
         /*
-         * 被动协调while循环
+         * 被动协调阶段
          */
         while (1) {
             // 读协调状态
@@ -60,7 +60,7 @@ void ccoordinatecommunication::enterCoordinate() {
             if (Status == true) {
                 // 自身可协调，邻接机器人可协调，满足协调三规则
                 if (CurrentCoorStatus) {
-                    // 主动协调
+                    // 主动协调阶段
                     activeCoorProcess();
                 } else {
                     muCoorStatus.unlock();

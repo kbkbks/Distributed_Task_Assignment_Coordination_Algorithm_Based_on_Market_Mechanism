@@ -364,6 +364,7 @@ void printAllocationResult(crobot * Robot, ctasklist * TaskList) {
  * 打印所有机器人任务执行队列的总价值
  */
 void printMinSum(crobot * Robot) {
+    cout << "-------------------------------------------------------" << endl;
     cout << "所有机器人任务执行队列价值：" << endl;
     float TotalTaskExecutionQueueValueSum = 0;  // 所有机器人价值总和
     float TotalTaskExecutionQueueDisSum = 0;    // 所有机器人TEQ执行距离总和
@@ -379,6 +380,26 @@ void printMinSum(crobot * Robot) {
     }
     cout << "所有机器人任务执行队列价值总和为：" << " " << TotalTaskExecutionQueueValueSum << endl;
     cout << "所有机器人任务执行队列执行距离总和为：" << " " << TotalTaskExecutionQueueDisSum << endl;
+}
+
+/*
+ * 打印最大的机器人任务执行队列距离
+ * (相同的机器人任务执行队列距离，只会列出编号最小的机器人)
+ */
+void printMinMax(crobot * Robot) {
+    cout << "-------------------------------------------------------" << endl;
+    float MaxTEQDistance = 0;
+    int MaxTEQIndex = -1;
+    for (int i = 0; i < ROBOTNUM; ++i) {
+        // float TotalTEQValue = Robot[i].sendTaskExecutionQueueValue();
+        float TotalTEQDistance = Robot[i].sendTEQDistance();
+        if (TotalTEQDistance > MaxTEQDistance) {
+            MaxTEQDistance = TotalTEQDistance;
+            MaxTEQIndex = i;
+        }
+    }
+    cout << "最大的机器人任务执行距离为：" << MaxTEQDistance << endl;
+    cout << "最大机器人任务执行距离的机器人编号是：" << MaxTEQIndex << endl;
 }
 
 int main() {
@@ -474,7 +495,9 @@ int main() {
             // 打印分配情况
             printAllocationResult(Robot, TaskList);
             // 打印所有机器人任务执行队列的总价值
-            printMinSum(Robot);  // minSum目标
+            printMinSum(Robot);  // MinSum目标
+            // 打印最大的机器人任务执行队列距离
+            printMinMax(Robot);  // MinMax目标
             cout << "**********************************************************************" << endl;
         } else {
             cout << "***********************机器人分配情况不一致！*************************" << endl;

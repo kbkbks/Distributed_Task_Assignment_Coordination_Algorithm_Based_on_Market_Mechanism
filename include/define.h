@@ -39,6 +39,7 @@ typedef struct TaskTemplate {
     int PointNo;   // 任务点编号
     float BeginPoint[2];   // 任务起点
     float EndPoint[2];  // 任务终点
+    int TaskLoad;   // 任务负载
 }TaskTemplate;
 
 // 竞拍算法互斥量

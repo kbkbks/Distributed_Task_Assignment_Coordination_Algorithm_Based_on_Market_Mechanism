@@ -34,6 +34,7 @@
  *                float EndPoint[2];  // 任务终点
  *                int TaskLoad;     // 任务负载
  *            }TaskTemplate;
+ * 2020-06-10 封装全局目标
  */
 
 #include "define.h"
@@ -345,6 +346,41 @@ void clearGlobalVar() {
     GlobalCoorStatus.clear();
 }
 
+/*
+ * 打印任务分配竞拍算法分配情况
+ */
+void printAllocationResult(crobot * Robot, ctasklist * TaskList) {
+    cout << "**********************************************************************" << endl;
+    cout << "所有机器人竞拍算法分配情况" << endl;
+    float ValueSum = 0;  // 价值总和
+    for (int i = 0; i < ROBOTNUM; i++) {
+        Robot[i].printAssignedTask(TaskList);
+        ValueSum += Robot[i].sendAssignedTaskValue();
+    }
+    cout << "任务价值总和：" << ValueSum << endl;
+}
+
+/*
+ * 打印所有机器人任务执行队列的总价值
+ */
+void printMinSum(crobot * Robot) {
+    cout << "所有机器人任务执行队列价值：" << endl;
+    float TotalTaskExecutionQueueValueSum = 0;  // 所有机器人价值总和
+    float TotalTaskExecutionQueueDisSum = 0;    // 所有机器人TEQ执行距离总和
+    for (int i = 0; i < ROBOTNUM; i++) {
+        float TotalTaskExecutionQueueValue = 0;
+        float TotalTaskExecutionQueueDistance = 0;
+        TotalTaskExecutionQueueValue = Robot[i].sendTaskExecutionQueueValue();
+        TotalTaskExecutionQueueDistance = Robot[i].sendTEQDistance();
+        TotalTaskExecutionQueueValueSum += TotalTaskExecutionQueueValue;
+        TotalTaskExecutionQueueDisSum += TotalTaskExecutionQueueDistance;
+        cout << "机器人" << Robot[i].sendRobotNum() << "任务执行队列总价值" << TotalTaskExecutionQueueValue << endl;
+        cout << "机器人" << Robot[i].sendRobotNum() << "任务执行队列整体距离" << TotalTaskExecutionQueueDistance << endl;
+    }
+    cout << "所有机器人任务执行队列价值总和为：" << " " << TotalTaskExecutionQueueValueSum << endl;
+    cout << "所有机器人任务执行队列执行距离总和为：" << " " << TotalTaskExecutionQueueDisSum << endl;
+}
+
 int main() {
     // 时间戳
     std::time_t timestampstart;
@@ -436,30 +472,9 @@ int main() {
             ) {
             // 所有机器人分配情况相同
             // 打印分配情况
-            cout << "**********************************************************************" << endl;
-            cout << "所有机器人竞拍算法分配情况" << endl;
-            float ValueSum = 0;  // 价值总和
-            for (int i = 0; i < ROBOTNUM; i++) {
-                Robot[i].printAssignedTask(TaskList);
-                ValueSum += Robot[i].sendAssignedTaskValue();
-            }
-            cout << "任务价值总和：" << ValueSum << endl;
+            printAllocationResult(Robot, TaskList);
             // 打印所有机器人任务执行队列的总价值
-            cout << "所有机器人任务执行队列价值：" << endl;
-            float TotalTaskExecutionQueueValueSum = 0;  // 所有机器人价值总和
-            float TotalTaskExecutionQueueDisSum = 0;    // 所有机器人TEQ执行距离总和
-            for (int i = 0; i < ROBOTNUM; i++) {
-                float TotalTaskExecutionQueueValue = 0;
-                float TotalTaskExecutionQueueDistance = 0;
-                TotalTaskExecutionQueueValue = Robot[i].sendTaskExecutionQueueValue();
-                TotalTaskExecutionQueueDistance = Robot[i].sendTEQDistance();
-                TotalTaskExecutionQueueValueSum += TotalTaskExecutionQueueValue;
-                TotalTaskExecutionQueueDisSum += TotalTaskExecutionQueueDistance;
-                cout << "机器人" << Robot[i].sendRobotNum() << "任务执行队列总价值" << TotalTaskExecutionQueueValue << endl;
-                cout << "机器人" << Robot[i].sendRobotNum() << "任务执行队列整体距离" << TotalTaskExecutionQueueDistance << endl;
-            }
-            cout << "所有机器人任务执行队列价值总和为：" << " " << TotalTaskExecutionQueueValueSum << endl;
-            cout << "所有机器人任务执行队列执行距离总和为：" << " " << TotalTaskExecutionQueueDisSum << endl;
+            printMinSum(Robot);  // minSum目标
             cout << "**********************************************************************" << endl;
         } else {
             cout << "***********************机器人分配情况不一致！*************************" << endl;

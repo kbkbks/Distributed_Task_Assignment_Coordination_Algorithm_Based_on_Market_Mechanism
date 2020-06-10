@@ -33,6 +33,8 @@
  *                float BeginPoint[2];   // 任务起点
  *                float EndPoint[2];  // 任务终点
  *                int TaskLoad;     // 任务负载
+ *                int TaskExeProgress;     // 任务执行进度, 初始为0，完毕为TaskLoad
+ *                int TaskExecutedFlag;   // 任务完成标志位，0标志未执行，1标志执行中，2标志已完成
  *            }TaskTemplate;
  * 2020-06-10 封装全局目标
  */
@@ -402,6 +404,13 @@ void printMinMax(crobot * Robot) {
     cout << "最大机器人任务执行距离的机器人编号是：" << MaxTEQIndex << endl;
 }
 
+/*
+ * 机器人执行任务
+ */
+void robotExecuteTask(crobot * Robot) {
+
+}
+
 int main() {
     // 时间戳
     std::time_t timestampstart;
@@ -502,6 +511,9 @@ int main() {
         } else {
             cout << "***********************机器人分配情况不一致！*************************" << endl;
         }
+
+        // 机器人执行任务
+        robotExecuteTask(Robot);
 
         // 返回剩余任务
         ctasklist * TaskList2 = new ctasklist;  // 定义新的任务列表，接收剩余任务

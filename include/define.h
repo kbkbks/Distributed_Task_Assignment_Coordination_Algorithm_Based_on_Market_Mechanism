@@ -40,6 +40,8 @@ typedef struct TaskTemplate {
     float BeginPoint[2];   // 任务起点
     float EndPoint[2];  // 任务终点
     int TaskLoad;   // 任务负载
+    int TaskExeProgress;     // 任务执行进度, 初始为0，完毕为TaskLoad
+    int TaskExecutedFlag;   // 任务执行标志位，0标志未执行，1标志执行中，2标志已完成
 }TaskTemplate;
 
 // 竞拍算法互斥量

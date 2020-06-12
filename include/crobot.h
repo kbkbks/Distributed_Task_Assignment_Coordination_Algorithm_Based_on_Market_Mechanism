@@ -258,6 +258,16 @@ class crobot {
      */
     float sendTEQDistance();
 
+    /*
+     * 返回机器人任务执行效率
+     */
+    int sendRate();
+
+    /*
+     * 接收任务执行队列
+     */
+    void getTaskExecutionQueue(vector<TaskTemplate> TEQ);
+
  private:
     // 常规任务分配变量
     float RobotLocation[2];  // 机器人位置
@@ -287,7 +297,7 @@ class crobot {
     vector<TaskTemplate> * NewCoorTEQ;   // 协调后对象新的任务执行队列数组，下标表示不同协调对象的TEQ
 
     // 多机器人任务执行变量
-    int rate;  // 任务执行效率
+    int Rate;  // 任务执行效率
 };
 
 #endif  // CROBOT_H_

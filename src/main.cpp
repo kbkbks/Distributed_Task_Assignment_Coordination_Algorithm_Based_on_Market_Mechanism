@@ -408,7 +408,34 @@ void printMinMax(crobot * Robot) {
  * 机器人执行任务
  */
 void robotExecuteTask(crobot * Robot) {
-
+    for (int i = 0; i < ROBOTNUM; ++i) {
+        vector<TaskTemplate> TEQ = Robot[i].setTaskExecutionQueue();
+        int rate = Robot[i].sendRate();
+        for (int j = 0; j < TEQ.size(); ++j) {
+            if (TEQ[j].TaskExecutedFlag == 1) {
+                // 任务正在执行
+                TEQ[j].TaskExeProgress += rate;
+                if (TEQ[j].TaskExeProgress >= TEQ[j].TaskLoad) {
+                    TEQ[j].TaskExeProgress = TEQ[j].TaskLoad;
+                    TEQ[j].TaskExecutedFlag = 2;    // 任务执行完毕
+                }
+                Robot[i].getTaskExecutionQueue(TEQ);    // 将任务执行队列返回给机器人private变量
+                break;
+            }
+            if (TEQ[j].TaskExecutedFlag == 0) {
+                // 任务尚未执行
+                TEQ[j].TaskExeProgress += rate;
+                if (TEQ[j].TaskExeProgress >= TEQ[j].TaskLoad) {
+                    TEQ[j].TaskExeProgress = TEQ[j].TaskLoad;
+                    TEQ[j].TaskExecutedFlag = 2;    // 任务执行完毕
+                } else {
+                    TEQ[j].TaskExecutedFlag = 1;    // 任务执行完毕
+                }
+                Robot[i].getTaskExecutionQueue(TEQ);    // 将任务执行队列返回给机器人private变量
+                break;
+            }
+        }
+    }
 }
 
 int main() {

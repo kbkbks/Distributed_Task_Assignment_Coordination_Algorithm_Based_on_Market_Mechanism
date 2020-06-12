@@ -15,6 +15,7 @@ void readTaskExecutionQueue(crobot * Robot);
 crobot::crobot():AllRobotPrice(ROBOTNUM), AllRobotBidder(ROBOTNUM), TaskExecutionQueueNum(0), CoorCommunicateLength(0), CoorCommunicateTime(0) {
     CoorCommunicateWidth = 2;
     maxValuePosition = -1;
+    rate = RAND_ROBOT_RATE;
 }
 
 /*
@@ -32,6 +33,7 @@ void crobot::setInitialValue(int r_No, float location_x, float location_y) {
 void crobot::printRobotInfo() {
     cout << "机器人编号：" << Robot_No << " "
         << "机器人位置：" << RobotLocation[0] << "," << RobotLocation[1] << " "
+        << "机器人任务执行效率" << rate
         << endl;
 }
 

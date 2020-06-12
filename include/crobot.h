@@ -285,6 +285,9 @@ class crobot {
     int CoorCommunicateWidth;   // 协调通信范围，这里为邻接机器人，即为2
     vector<TaskTemplate> * CoorTEQ;  // 协调对象任务执行队列数组，下标表示不同协调对象的TEQ
     vector<TaskTemplate> * NewCoorTEQ;   // 协调后对象新的任务执行队列数组，下标表示不同协调对象的TEQ
+
+    // 多机器人任务执行变量
+    int rate;  // 任务执行效率
 };
 
 #endif  // CROBOT_H_

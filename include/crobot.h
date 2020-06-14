@@ -58,6 +58,11 @@ class crobot {
     float sendTaskExecutionQueueValue();
 
     /*
+     * 任务执行计算任务价值（常规）
+     */
+    void calGeneralTaskUnexe(TaskTemplate * TmpTask);
+
+    /*
      * 出价
      * @warning 竞拍算法核心代码，需要增加必要的断言或异常处理保证程序正常运行
      */

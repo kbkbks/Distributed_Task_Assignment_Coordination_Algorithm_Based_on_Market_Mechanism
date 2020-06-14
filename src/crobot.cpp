@@ -154,6 +154,12 @@ void crobot::calculateValue(ctasklist * tasklist, int i) {
     // 寻找使插入新任务后整体任务执行队列价值最高的插入点(机器人自协调)
     SelfCoordination(TmpTask);
 #endif
+
+#if TASK_EXECUTION
+    // 任务执行，常规直接计算任务价值
+    calGeneralTaskUnexe(TmpTask);
+    printValueList(i);
+#endif
 }
 
 /*
@@ -252,6 +258,59 @@ float crobot::sendTaskExecutionQueueValue() {
     }
 
     return tmpValue;
+}
+
+/*
+ * 任务执行计算任务价值（常规）
+ */
+void crobot::calGeneralTaskUnexe(TaskTemplate * TmpTask) {
+    float Distance = 0;     // 机器人完成当前竞标任务的路程
+    float Value = 0;    // 任务价值
+    float UnexeDistance = 0;    // 未完成任务路程
+
+    // 计算当前竞标任务路程
+    int TEQsize = getTaskExecutionQueueLength();
+    if (TEQsize != 0) {
+        Distance = sqrt(pow(TaskExecutionQueue[TEQsize - 1].EndPoint[0] - TmpTask->BeginPoint[0], 2) +
+        pow(TaskExecutionQueue[TEQsize - 1].EndPoint[1] - TmpTask->BeginPoint[1], 2)) +
+        sqrt(pow(TmpTask->EndPoint[0] - TmpTask->BeginPoint[0], 2) +
+        pow(TmpTask->EndPoint[1] - TmpTask->BeginPoint[1], 2));
+    } else {
+        Distance = sqrt(pow(RobotLocation[0] - TmpTask->BeginPoint[0], 2) +
+        pow(RobotLocation[1] - TmpTask->BeginPoint[1], 2)) +
+        sqrt(pow(TmpTask->EndPoint[0] - TmpTask->BeginPoint[0], 2) +
+        pow(TmpTask->EndPoint[1] - TmpTask->BeginPoint[1], 2));
+    }
+
+    // 计算未完成任务路程
+    for (int i = 0; i < TEQsize; ++i) {
+        // 任务执行标志位为2， 当前任务已完成
+        if (TaskExecutionQueue[i].TaskExecutedFlag == 2) continue;
+
+        // 任务执行标志位为1， 当前任务正在执行
+        if (TaskExecutionQueue[i].TaskExecutedFlag == 1) {
+            UnexeDistance += sqrt(pow(TaskExecutionQueue[i].EndPoint[0] - TaskExecutionQueue[i].BeginPoint[0], 2) +
+            pow(TaskExecutionQueue[i].EndPoint[1] - TaskExecutionQueue[i].BeginPoint[1], 2)) *
+            (TaskExecutionQueue[i].TaskExeProgress / TaskExecutionQueue[i].TaskLoad);
+            continue;
+        }
+
+        // 任务执行标志位为0， 当前任务未执行
+        if (TaskExecutionQueue[i].TaskExecutedFlag == 0 && i >= 1) {
+            UnexeDistance += sqrt(pow(TaskExecutionQueue[i - 1].EndPoint[0] - TaskExecutionQueue[i].BeginPoint[0], 2) +
+            pow(TaskExecutionQueue[i - 1].EndPoint[1] - TaskExecutionQueue[i].BeginPoint[1], 2)) +
+            sqrt(pow(TaskExecutionQueue[i].EndPoint[0] - TaskExecutionQueue[i].BeginPoint[0], 2) +
+            pow(TaskExecutionQueue[i].EndPoint[1] - TaskExecutionQueue[i].BeginPoint[1], 2));
+        } else {
+            UnexeDistance += sqrt(pow(RobotLocation[0] - TaskExecutionQueue[i].BeginPoint[0], 2) +
+            pow(RobotLocation[1] - TaskExecutionQueue[i].BeginPoint[1], 2)) +
+            sqrt(pow(TaskExecutionQueue[i].EndPoint[0] - TaskExecutionQueue[i].BeginPoint[0], 2) +
+            pow(TaskExecutionQueue[i].EndPoint[1] - TaskExecutionQueue[i].BeginPoint[1], 2));
+        }
+    }
+
+    Value = 1 / (Distance + UnexeDistance);
+    ValueList.push_back(Value);
 }
 
 /*

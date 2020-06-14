@@ -30,6 +30,7 @@
 #define RAND_NUM rand() / static_cast<double>(RAND_MAX) / 100  // 随机数， 0～0.01
 #define SINGLE_COORDINATE 0  // 单个机器人协调策略
 #define MULTIROBOT_COORDINATE 0  // 多机器人协调策略
+#define TASK_EXECUTION 0    // 任务执行
 
 using namespace std;
 

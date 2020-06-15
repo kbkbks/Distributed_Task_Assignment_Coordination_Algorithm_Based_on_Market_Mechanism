@@ -94,7 +94,7 @@ void crobot::generateValueList(ctasklist * tasklist, int tasklist_num, float ran
         }
     }
 
-#if !SINGLE_COORDINATE
+#if GENERAL_UTILITY
     // 更新机器人位置坐标
     updadteRobotLocation(tasklist);
 #endif
@@ -144,7 +144,7 @@ void crobot::calculateValue(ctasklist * tasklist, int i) {
     TaskTemplate * TmpTask;   // 待计算价值的任务
     TmpTask = tasklist->sendTaskQueue(i);   // 取任务列表中的第i个任务，别名为TmpTask
 
-#if !SINGLE_COORDINATE
+#if GENERAL_UTILITY
     // 常规直接计算任务价值
     GeneralCalculate(TmpTask);
     printValueList(i);
@@ -173,6 +173,8 @@ void crobot::printValueList(int i) {
 
 /*
  * 常规直接计算任务价值(不带机器人自协调)
+ * @remark：该函数存在bug。不建议使用RobotLocation，该变量在sendTaskExecutionQueueValue中用于计算Value，在以下函数中
+ * RobotLocation会随任务分配而变化。同时建议去掉位置更新函数。
  */
 void crobot::GeneralCalculate(TaskTemplate * TmpTask) {
     float Distance;  // 机器人完成任务的路程
@@ -240,6 +242,8 @@ float crobot::calculateTmpTaskExecutionQueueValue(TaskTemplate * TmpTask, int po
 
 /*
  * 发送任务执行队列总价值
+ * @remark：在当前常规计算任务价值函数中（GeneralCalculate），RobotLocation会随便任务分配而改变，
+ * 此处为严重bug，导致以下函数计算的Value不可用。
  */
 float crobot::sendTaskExecutionQueueValue() {
     float tmpValue = 0;
@@ -1624,6 +1628,7 @@ void crobot::convergence(bool &flag) {
 
 /*
  * 更新机器人位置坐标
+ * @remark：不建议使用该函数，该函数存在隐患，RobotLocation不应该改变。
  */
 void crobot::updadteRobotLocation(ctasklist * tasklist) {
     RobotLocation[0] = tasklist->sendTaskQueue(AssignedTask)->EndPoint[0];

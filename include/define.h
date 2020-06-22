@@ -21,7 +21,7 @@
 #include <unordered_map>
 
 #define ROBOTNUM 6  // 机器人数量
-#define TASKPOINT 8  // 任务点数量
+#define TASKPOINT 4  // 任务点数量
 #define TASKCAPACITY 5  // 任务点任务容量
 #define COORDINATE_LENGTH 3  // 协调长度
 #define RAND_NUM rand() / static_cast<double>(RAND_MAX) / 100  // 随机数， 0～0.01

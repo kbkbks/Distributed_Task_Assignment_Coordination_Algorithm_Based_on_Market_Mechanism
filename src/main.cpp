@@ -441,7 +441,7 @@ int main() {
         //创建机器人子线程
         vector<thread> ThreadsRobot;
         for (int i = 0; i < ROBOTNUM; i++) {
-            float random_num = RAND_NUM;    // 随机数，0~0.1
+            float random_num = RAND_NUM;    // 随机数
             // cout << random_num << endl;
             // 子线程入口函数第三个参数，rand_num,可以不使用（在子线程内部定义，更符合分布式系统）
             ThreadsRobot.push_back(thread(&crobot::generateValueList, Robot[i], TaskList, TaskListNum, random_num, ref(PromisesRobot[i])));

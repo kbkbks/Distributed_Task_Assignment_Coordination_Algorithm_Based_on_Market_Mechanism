@@ -22,6 +22,10 @@
  * 通信协调长度：TaskExecutionQueue 3个任务长度
  * -------------------------------------------------------------------------------------------------------------------------
  * 2020-06-10 封装全局目标
+ * -------------------------------------------------------------------------------------------------------------------------
+ * 2020-06-22 创建新分支auctionAlgorithm_bug_fixed，用于修复基于市场机制的竞拍算法bug，
+ * 当机器人数大于任务数，算法执行出现异常，进入死循环。
+ * 2020-07-02 修复机器人数大于任务数bug，并且修复目标函数计算bug，后续代码不再使用updateRobotLocation方法
  */
 
 #include "define.h"
@@ -438,7 +442,7 @@ int main() {
         //创建机器人子线程
         vector<thread> ThreadsRobot;
         for (int i = 0; i < ROBOTNUM; i++) {
-            float random_num = RAND_NUM;    // 随机数，0~0.1
+            float random_num = RAND_NUM;    // 随机数
             // cout << random_num << endl;
             // 子线程入口函数第三个参数，rand_num,可以不使用（在子线程内部定义，更符合分布式系统）
             ThreadsRobot.push_back(thread(&crobot::generateValueList, Robot[i], TaskList, TaskListNum, random_num, ref(PromisesRobot[i])));

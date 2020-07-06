@@ -94,11 +94,6 @@ void crobot::generateValueList(ctasklist * tasklist, int tasklist_num, float ran
         }
     }
 
-#if GENERAL_UTILITY
-    // 更新机器人位置坐标
-    updadteRobotLocation(tasklist);
-#endif
-
     // 将中标的任务存入机器人任务执行队列
     savetoTaskExecutionQueue(tasklist);
     TaskExecutionQueueNum = TaskExecutionQueue.size();
@@ -146,7 +141,8 @@ void crobot::calculateValue(ctasklist * tasklist, int i) {
 
 #if GENERAL_UTILITY
     // 常规直接计算任务价值
-    GeneralCalculate(TmpTask);
+    // GeneralCalculate(TmpTask);
+    NewGeneralCalculate(TmpTask);
     printValueList(i);
 #endif
 
@@ -172,11 +168,12 @@ void crobot::printValueList(int i) {
 }
 
 /*
+ * @deprecated RobotLocation修改会引起后续问题，不建议修改和使用
  * 常规直接计算任务价值(不带机器人自协调)
  * @remark：该函数存在bug。不建议使用RobotLocation，该变量在sendTaskExecutionQueueValue中用于计算Value，在以下函数中
  * RobotLocation会随任务分配而变化。同时建议去掉位置更新函数。
  */
-void crobot::GeneralCalculate(TaskTemplate * TmpTask) {
+[[deprecated]] void crobot::GeneralCalculate(TaskTemplate * TmpTask) {
     float Distance;  // 机器人完成任务的路程
     float Value;    // 任务价值
 
@@ -184,6 +181,27 @@ void crobot::GeneralCalculate(TaskTemplate * TmpTask) {
         sqrt(pow(TmpTask->EndPoint[0] - TmpTask->BeginPoint[0], 2) + pow(TmpTask->EndPoint[1] - TmpTask->BeginPoint[1], 2));
     Value = 1 / Distance;
     ValueList.push_back(Value);
+}
+
+/*
+ * 新常规直接计算任务价值(不带机器人自协调)
+ */
+void crobot::NewGeneralCalculate(TaskTemplate * TmpTask) {
+    float Distance;  // 机器人完成任务的路程
+    float Value;    // 任务价值
+
+    if (TaskExecutionQueueNum) {
+        Distance = sqrt(pow(TmpTask->BeginPoint[0] - TaskExecutionQueue.back().EndPoint[0], 2) +
+         pow(TmpTask->BeginPoint[1] - TaskExecutionQueue.back().EndPoint[1], 2)) +
+            sqrt(pow(TmpTask->EndPoint[0] - TmpTask->BeginPoint[0], 2) + pow(TmpTask->EndPoint[1] - TmpTask->BeginPoint[1], 2));
+        Value = 1 / Distance;
+        ValueList.push_back(Value);
+    } else {
+        Distance = sqrt(pow(TmpTask->BeginPoint[0] - RobotLocation[0], 2) + pow(TmpTask->BeginPoint[1] - RobotLocation[1], 2)) +
+        sqrt(pow(TmpTask->EndPoint[0] - TmpTask->BeginPoint[0], 2) + pow(TmpTask->EndPoint[1] - TmpTask->BeginPoint[1], 2));
+        Value = 1 / Distance;
+        ValueList.push_back(Value);
+    }
 }
 
 /*
@@ -248,17 +266,24 @@ float crobot::calculateTmpTaskExecutionQueueValue(TaskTemplate * TmpTask, int po
 float crobot::sendTaskExecutionQueueValue() {
     float tmpValue = 0;
     float tmpDistance = 0;
-    tmpDistance = sqrt(pow(TaskExecutionQueue[0].BeginPoint[0] - RobotLocation[0], 2) +
-        pow(TaskExecutionQueue[0].BeginPoint[1] - RobotLocation[1], 2)) +
-        sqrt(pow(TaskExecutionQueue[0].EndPoint[0] - TaskExecutionQueue[0].BeginPoint[0], 2) +
-        pow(TaskExecutionQueue[0].EndPoint[1] - TaskExecutionQueue[0].BeginPoint[1], 2));
-    tmpValue += 1 / tmpDistance;    // 累积价值
-    for (int i = 1; i < TaskExecutionQueueNum; i++) {
-        tmpDistance = sqrt(pow(TaskExecutionQueue[i].BeginPoint[0] - TaskExecutionQueue[i - 1].EndPoint[0], 2) +
-            pow(TaskExecutionQueue[i].BeginPoint[1] - TaskExecutionQueue[i - 1].EndPoint[1], 2)) +
-            sqrt(pow(TaskExecutionQueue[i].EndPoint[0] - TaskExecutionQueue[i].BeginPoint[0], 2) +
-            pow(TaskExecutionQueue[i].EndPoint[1] - TaskExecutionQueue[i].BeginPoint[1], 2));
+
+    /*
+     * @repair
+     * 尝试修复机器人数大于任务数异常bug
+     */
+    if (TaskExecutionQueue.size()) {
+        tmpDistance = sqrt(pow(TaskExecutionQueue[0].BeginPoint[0] - RobotLocation[0], 2) +
+            pow(TaskExecutionQueue[0].BeginPoint[1] - RobotLocation[1], 2)) +
+            sqrt(pow(TaskExecutionQueue[0].EndPoint[0] - TaskExecutionQueue[0].BeginPoint[0], 2) +
+            pow(TaskExecutionQueue[0].EndPoint[1] - TaskExecutionQueue[0].BeginPoint[1], 2));
         tmpValue += 1 / tmpDistance;    // 累积价值
+        for (int i = 1; i < TaskExecutionQueueNum; i++) {
+            tmpDistance = sqrt(pow(TaskExecutionQueue[i].BeginPoint[0] - TaskExecutionQueue[i - 1].EndPoint[0], 2) +
+                pow(TaskExecutionQueue[i].BeginPoint[1] - TaskExecutionQueue[i - 1].EndPoint[1], 2)) +
+                sqrt(pow(TaskExecutionQueue[i].EndPoint[0] - TaskExecutionQueue[i].BeginPoint[0], 2) +
+                pow(TaskExecutionQueue[i].EndPoint[1] - TaskExecutionQueue[i].BeginPoint[1], 2));
+            tmpValue += 1 / tmpDistance;    // 累积价值
+        }
     }
 
     return tmpValue;
@@ -346,6 +371,15 @@ void crobot::bidding(int tasklist_num) {
     }
 
     /*
+     * @repair
+     * 尝试修复机器人数大于任务数异常bug
+     */
+    if (NetMax == 0) {
+        AssignedTask = -1;
+    }
+
+
+    /*
      * 可直接改为迭代器访问
      */
     //选择净值第二大的任务
@@ -358,10 +392,16 @@ void crobot::bidding(int tasklist_num) {
         }
     }
 
-    // 出价，设置新竞标价格和新竞标者
-    AssignedPrice = NetMax - NetSecMax + eps;
-    Price[AssignedTask] = AssignedPrice + Price[AssignedTask];
-    Bidder[AssignedTask] = Robot_No;
+    /*
+     * @repair
+     * 尝试修复机器人数大于任务数异常bug
+     */
+    if (NetMax > 0) {
+        // 出价，设置新竞标价格和新竞标者
+        AssignedPrice = NetMax - NetSecMax + eps;
+        Price[AssignedTask] = AssignedPrice + Price[AssignedTask];
+        Bidder[AssignedTask] = Robot_No;
+    }
 
     // 将出价和竞标者写入所有机器人价格，竞标者中
     setARPandARB(tasklist_num);
@@ -1627,23 +1667,32 @@ void crobot::convergence(bool &flag) {
 }
 
 /*
+ * @deprecated 机器人位置坐标仅在初始化时赋值，此位置坐标意为初始化坐标
  * 更新机器人位置坐标
  * @remark：不建议使用该函数，该函数存在隐患，RobotLocation不应该改变。
  */
-void crobot::updadteRobotLocation(ctasklist * tasklist) {
-    RobotLocation[0] = tasklist->sendTaskQueue(AssignedTask)->EndPoint[0];
-    RobotLocation[1] = tasklist->sendTaskQueue(AssignedTask)->EndPoint[1];
+[[deprecated]] void crobot::updadteRobotLocation(ctasklist * tasklist) {
+    if (AssignedTask != -1) {
+        RobotLocation[0] = tasklist->sendTaskQueue(AssignedTask)->EndPoint[0];
+        RobotLocation[1] = tasklist->sendTaskQueue(AssignedTask)->EndPoint[1];
+    }
 }
 
 /*
  * 将中标的任务存入机器人任务执行队列
  */
 void crobot::savetoTaskExecutionQueue(ctasklist * tasklist) {
-    TaskTemplate * tmp = tasklist->sendTaskQueue(AssignedTask);
-    if (maxValuePosition != -1) {
-        TaskExecutionQueue.insert(TaskExecutionQueue.begin() + maxValuePosition, *tmp);
-    } else {
-        TaskExecutionQueue.push_back(*tmp);
+    /*
+     * @repair
+     * 尝试修复机器人数大于任务数异常bug
+     */
+    if (AssignedTask != -1) {
+        TaskTemplate * tmp = tasklist->sendTaskQueue(AssignedTask);
+        if (maxValuePosition != -1) {
+            TaskExecutionQueue.insert(TaskExecutionQueue.begin() + maxValuePosition, *tmp);
+        } else {
+            TaskExecutionQueue.push_back(*tmp);
+        }
     }
 }
 
@@ -1651,10 +1700,18 @@ void crobot::savetoTaskExecutionQueue(ctasklist * tasklist) {
  * 打印分配的任务
  */
 void crobot::printAssignedTask(ctasklist * tasklist) {
-    cout << "机器人编号" << Robot_No
-        << "任务点编号：" << tasklist->sendTaskQueue(AssignedTask)->PointNo
-        << "任务编号：" << tasklist->sendTaskQueue(AssignedTask)->TaskNo
-        << endl;
+    /*
+     * @repair
+     * 尝试修复机器人数大于任务数异常bug
+     */
+    if (AssignedTask != -1) {
+        cout << "机器人编号" << Robot_No
+            << "任务点编号：" << tasklist->sendTaskQueue(AssignedTask)->PointNo
+            << "任务编号：" << tasklist->sendTaskQueue(AssignedTask)->TaskNo
+            << endl;
+    } else {
+        cout << "机器人编号" << Robot_No << "未分配任务" << endl;
+    }
 }
 
 /*
@@ -2019,19 +2076,27 @@ int crobot::getCoorTEQLength(int i) {
  */
 float crobot::sendTEQDistance() {
     float tmpDistance = 0;
-    tmpDistance = sqrt(pow(TaskExecutionQueue[0].BeginPoint[0] - RobotLocation[0], 2) +
-        pow(TaskExecutionQueue[0].BeginPoint[1] - RobotLocation[1], 2)) +
-        sqrt(pow(TaskExecutionQueue[0].EndPoint[0] - TaskExecutionQueue[0].BeginPoint[0], 2) +
-        pow(TaskExecutionQueue[0].EndPoint[1] - TaskExecutionQueue[0].BeginPoint[1], 2));
-    for (int i = 1; i < TaskExecutionQueueNum; i++) {
-        tmpDistance = sqrt(pow(TaskExecutionQueue[i].BeginPoint[0] - TaskExecutionQueue[i - 1].EndPoint[0], 2) +
-            pow(TaskExecutionQueue[i].BeginPoint[1] - TaskExecutionQueue[i - 1].EndPoint[1], 2)) +
-            sqrt(pow(TaskExecutionQueue[i].EndPoint[0] - TaskExecutionQueue[i].BeginPoint[0], 2) +
-            pow(TaskExecutionQueue[i].EndPoint[1] - TaskExecutionQueue[i].BeginPoint[1], 2));
-        tmpDistance += tmpDistance;    // 累积价值
+    float Distance = 0;
+
+    /*
+     * @repair
+     * 尝试修复机器人数大于任务数异常bug
+     */
+    if (TaskExecutionQueue.size()) {
+        Distance = sqrt(pow(TaskExecutionQueue[0].BeginPoint[0] - RobotLocation[0], 2) +
+            pow(TaskExecutionQueue[0].BeginPoint[1] - RobotLocation[1], 2)) +
+            sqrt(pow(TaskExecutionQueue[0].EndPoint[0] - TaskExecutionQueue[0].BeginPoint[0], 2) +
+            pow(TaskExecutionQueue[0].EndPoint[1] - TaskExecutionQueue[0].BeginPoint[1], 2));
+        for (int i = 1; i < TaskExecutionQueueNum; i++) {
+            tmpDistance = sqrt(pow(TaskExecutionQueue[i].BeginPoint[0] - TaskExecutionQueue[i - 1].EndPoint[0], 2) +
+                pow(TaskExecutionQueue[i].BeginPoint[1] - TaskExecutionQueue[i - 1].EndPoint[1], 2)) +
+                sqrt(pow(TaskExecutionQueue[i].EndPoint[0] - TaskExecutionQueue[i].BeginPoint[0], 2) +
+                pow(TaskExecutionQueue[i].EndPoint[1] - TaskExecutionQueue[i].BeginPoint[1], 2));
+            Distance += tmpDistance;    // 累积价值
+        }
     }
 
-    return tmpDistance;
+    return Distance;
 }
 
 /*

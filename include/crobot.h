@@ -38,9 +38,15 @@ class crobot {
     void printValueList(int i);
 
     /*
+     * @deprecated RobotLocation修改会引起后续问题，不建议修改和使用
      * 常规直接计算任务价值(不带机器人自协调)
      */
-    void GeneralCalculate(TaskTemplate * TmpTask);
+    [[deprecated]] void GeneralCalculate(TaskTemplate * TmpTask);
+
+    /*
+     * 新常规直接计算任务价值(不带机器人自协调)
+     */
+    void NewGeneralCalculate(TaskTemplate * TmpTask);
 
     /*
      * 寻找使插入新任务后整体任务执行队列价值最高的插入点(机器人自协调)
@@ -154,9 +160,10 @@ class crobot {
     void convergence(bool &flag);
 
     /*
+     * @deprecated 机器人位置坐标仅在初始化时赋值，此位置坐标意为初始化坐标
      * 更新机器人位置坐标
      */
-    void updadteRobotLocation(ctasklist * tasklist);
+    [[deprecated]] void updadteRobotLocation(ctasklist * tasklist);
 
     /*
      * 将中标的任务存入机器人任务执行队列

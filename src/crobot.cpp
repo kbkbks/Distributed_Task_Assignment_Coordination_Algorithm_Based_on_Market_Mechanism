@@ -92,11 +92,6 @@ void crobot::generateValueList(ctasklist * tasklist, int tasklist_num, float ran
         }
     }
 
-#if !SINGLE_COORDINATE
-    // 更新机器人位置坐标
-    // updadteRobotLocation(tasklist);
-#endif
-
     // 将中标的任务存入机器人任务执行队列
     savetoTaskExecutionQueue(tasklist);
     TaskExecutionQueueNum = TaskExecutionQueue.size();
@@ -165,9 +160,8 @@ void crobot::printValueList(int i) {
 }
 
 /*
- * @deprecated
+ * @deprecated RobotLocation修改会引起后续问题，不建议修改和使用
  * 常规直接计算任务价值(不带机器人自协调)
- * [RobotLocation修改会引起后续问题，不建议修改和使用]
  */
 [[deprecated]] void crobot::GeneralCalculate(TaskTemplate * TmpTask) {
     float Distance;  // 机器人完成任务的路程
@@ -1608,9 +1602,10 @@ void crobot::convergence(bool &flag) {
 }
 
 /*
+ * @deprecated 机器人位置坐标仅在初始化时赋值，此位置坐标意为初始化坐标
  * 更新机器人位置坐标
  */
-void crobot::updadteRobotLocation(ctasklist * tasklist) {
+[[deprecated]] void crobot::updadteRobotLocation(ctasklist * tasklist) {
     if (AssignedTask != -1) {
         RobotLocation[0] = tasklist->sendTaskQueue(AssignedTask)->EndPoint[0];
         RobotLocation[1] = tasklist->sendTaskQueue(AssignedTask)->EndPoint[1];

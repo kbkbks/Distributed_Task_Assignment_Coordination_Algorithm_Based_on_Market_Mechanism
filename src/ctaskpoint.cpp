@@ -14,7 +14,8 @@ void ctaskpoint::setInitialValue(int pointnum, float bp[][2], float ep[][2]) {
         TaskRepository[i].BeginPoint[1] = bp[i][1];
         TaskRepository[i].EndPoint[0] = ep[i][0];
         TaskRepository[i].EndPoint[1] = ep[i][1];
-        TaskRepository[i].TaskLoad = RAND_TASKLOAD;
+        // TaskRepository[i].TaskLoad = RAND_TASKLOAD;
+        TaskRepository[i].TaskLoad = TASKLOAD;
         TaskRepository[i].TaskExeProgress = 0;
         TaskRepository[i].TaskExecutedFlag = 0;
     }

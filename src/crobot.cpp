@@ -15,7 +15,8 @@ void readTaskExecutionQueue(crobot * Robot);
 crobot::crobot():AllRobotPrice(ROBOTNUM), AllRobotBidder(ROBOTNUM), TaskExecutionQueueNum(0), CoorCommunicateLength(0), CoorCommunicateTime(0) {
     CoorCommunicateWidth = 2;
     maxValuePosition = -1;
-    Rate = RAND_ROBOT_RATE;
+    // Rate = RAND_ROBOT_RATE;
+    Rate = ROBOT_RATE;
 }
 
 /*
@@ -54,7 +55,7 @@ void crobot::generateValueList(ctasklist * tasklist, int tasklist_num, float ran
 
     // 局部变量赋值
     vector<float> PriceOld;  // 旧价格
-    eps = 0.01 + rand_num;   // 松弛变量，加上随机数，每个机器人不同
+    eps = 0.0001 + rand_num;   // 松弛变量，加上随机数，每个机器人不同
     bool flag = false;
     AssignedTask = -1;
 
@@ -315,17 +316,18 @@ void crobot::calGeneralTaskUnexe(TaskTemplate * TmpTask) {
     for (int i = 0; i < TEQsize; ++i) {
         // 任务执行标志位为2， 当前任务已完成
         if (TaskExecutionQueue[i].TaskExecutedFlag == 2) continue;
-
+        float test = static_cast<float>(TaskExecutionQueue[i].TaskExeProgress) / static_cast<float>(TaskExecutionQueue[i].TaskLoad);
         // 任务执行标志位为1， 当前任务正在执行
+        // 计算当前执行任务的未执行部分比例
         if (TaskExecutionQueue[i].TaskExecutedFlag == 1) {
             UnexeDistance += sqrt(pow(TaskExecutionQueue[i].EndPoint[0] - TaskExecutionQueue[i].BeginPoint[0], 2) +
             pow(TaskExecutionQueue[i].EndPoint[1] - TaskExecutionQueue[i].BeginPoint[1], 2)) *
-            (TaskExecutionQueue[i].TaskExeProgress / TaskExecutionQueue[i].TaskLoad);
+            (1.0f - static_cast<float>(TaskExecutionQueue[i].TaskExeProgress) / static_cast<float>(TaskExecutionQueue[i].TaskLoad));
             continue;
         }
 
         // 任务执行标志位为0， 当前任务未执行
-        if (TaskExecutionQueue[i].TaskExecutedFlag == 0 && i >= 1) {
+        if (i >= 1) {
             UnexeDistance += sqrt(pow(TaskExecutionQueue[i - 1].EndPoint[0] - TaskExecutionQueue[i].BeginPoint[0], 2) +
             pow(TaskExecutionQueue[i - 1].EndPoint[1] - TaskExecutionQueue[i].BeginPoint[1], 2)) +
             sqrt(pow(TaskExecutionQueue[i].EndPoint[0] - TaskExecutionQueue[i].BeginPoint[0], 2) +

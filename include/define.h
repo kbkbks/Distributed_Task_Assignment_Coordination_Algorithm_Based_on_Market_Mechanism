@@ -5,8 +5,10 @@
 #define DEFINE_H_
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <assert.h>
+#include <string.h>
 #include <sys/time.h>
 #include <sys/syscall.h>
 #include <math.h>
@@ -21,7 +23,7 @@
 #include <unordered_map>
 
 #define ROBOTNUM 6  // 机器人数量
-#define TASKPOINT 4  // 任务点数量
+#define TASKPOINT 8  // 任务点数量
 #define TASKCAPACITY 5  // 任务点任务容量
 #define COORDINATE_LENGTH 3  // 协调长度
 #define TASKLOAD 2  // 任务负载（全局）
@@ -33,6 +35,7 @@
 #define SINGLE_COORDINATE 0  // 单个机器人协调策略
 #define MULTIROBOT_COORDINATE 0  // 多机器人协调策略
 #define TASK_EXECUTION 1    // 任务执行计算效用（常规）
+#define ATOMICLENGTH 3  // 原子能力数量
 
 using namespace std;
 
@@ -40,7 +43,7 @@ using namespace std;
  * 任务集合
  * 内有所有任务都具备的信息，包括任务编号，任务点编号，任务起点，任务终点
  */
-typedef struct TaskTemplate {
+struct TaskTemplate {
     int TaskNo;    // 任务编号(任务点中的任务编号)
     int PointNo;   // 任务点编号
     float BeginPoint[2];   // 任务起点
@@ -48,7 +51,8 @@ typedef struct TaskTemplate {
     int TaskLoad;   // 任务负载
     int TaskExeProgress;     // 任务执行进度, 初始为0，完毕为TaskLoad
     int TaskExecutedFlag;   // 任务执行标志位，0标志未执行，1标志执行中，2标志已完成
-}TaskTemplate;
+    int TaskDem[ATOMICLENGTH];    // 任务需求向量
+};
 
 // 竞拍算法互斥量
 extern mutex Mymutex;   // 互斥量

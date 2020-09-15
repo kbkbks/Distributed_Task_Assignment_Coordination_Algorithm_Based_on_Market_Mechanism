@@ -10,7 +10,9 @@
 class crobot {
  public:
     crobot();
-    ~crobot() {}
+    ~crobot() {
+       cout << "robot析构" << endl;
+    }
 
     /*
      * 向机器人传递所有初始化参数
@@ -280,6 +282,16 @@ class crobot {
      */
     void getTaskExecutionQueue(vector<TaskTemplate> TEQ);
 
+    /*
+     * 设置机器人能力向量
+     */
+    void setRobotCapacity(vector<int> cap);
+
+    /*
+     * 获取机器人能力向量
+     */
+    vector<int> getRobotCapacity();
+
  private:
     // 常规任务分配变量
     float RobotLocation[2];  // 机器人位置
@@ -310,6 +322,9 @@ class crobot {
 
     // 多机器人任务执行变量
     int Rate;  // 任务执行效率
+
+    // 异构机器人变量
+    vector<int> RobotCap;  // 机器人能力向量
 };
 
 #endif  // CROBOT_H_

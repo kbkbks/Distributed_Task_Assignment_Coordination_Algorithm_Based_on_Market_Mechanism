@@ -11,7 +11,7 @@ ctasklist::ctasklist():TaskNumber(0) { }
 /*
  * 从任务发布点接收任务
  */
-void ctasklist::getTask(ctaskpoint taskpoint, int i) {
+void ctasklist::getTask(ctaskpoint& taskpoint, int i) {
     TaskQueue.push_back(taskpoint.sendTask(i));
     TaskNumber++;
     // printTaskList();

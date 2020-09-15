@@ -9,12 +9,15 @@
 class ctaskpoint {
  public:
     ctaskpoint() {}
-    ~ctaskpoint() {}
+    ~ctaskpoint() {
+        delete[] TaskRepository;
+        // cout << "taskpoint析构" << endl;
+    }
 
     /*
      * 向任务发布点传递所有初始化参数
      */
-    void setInitialValue(int pointnum, float bp[][2], float ep[][2]);
+    void setInitialValue(int pointnum, float bp[][2], float ep[][2], int dem[ATOMICLENGTH]);
 
     /*
      * 打印任务点存放的任务信息

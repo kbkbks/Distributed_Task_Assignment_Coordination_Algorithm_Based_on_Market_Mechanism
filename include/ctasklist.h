@@ -14,7 +14,7 @@ class ctasklist {
     /*
      * 从任务发布点接收任务
      */
-    void getTask(ctaskpoint taskpoint, int i);
+    void getTask(ctaskpoint& taskpoint, int i);
 
     /*
      * 打印任务列表信息

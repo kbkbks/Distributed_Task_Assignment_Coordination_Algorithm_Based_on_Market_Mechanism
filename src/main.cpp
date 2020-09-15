@@ -45,7 +45,12 @@
  * 2020-09-15 删除GlobalObjective分支
  * -------------------------------------------------------------------------------------------------------------------------
  * 2020-09-15 创建HeterogeneousRobot分支，用于设计并实现异构机器人集群任务分配。
- * 
+ *      修改ctaskpoint.h，补充析构函数。需合并至master分支。
+ *      修改ctasklist.h和ctasklist.cpp中getTask函数，参数改为引用传递，防止临时变量销毁导致的TaskPoint对象中new出来的TaskRepositor销毁。
+ * 后续可以增加TaskPoint类的拷贝构造函数，用于深拷贝。需合并至master分支。
+ *      修改TaskTemplate，该结构体也发生多次拷贝和析构，导致结构体内不能放容器（会有运行时内存分配错误），后续需要修改类中拷贝构造或者
+ * 修改调用时参数传递方式。需合并至master分支。
+ *      针对每个机器人和任务都只对应一种原子能力的情况，当前可基本实现异构机器人分配。
  */
 
 #include "define.h"
@@ -475,16 +480,22 @@ int main() {
     assert(TaskPoint != NULL);
     // 向任务点存放初始化任务
     for (int i = 0; i < TASKPOINT; i++) {
-        TaskPoint[i].setInitialValue(i, BeginInitial[i], EndInitial[i]);
+        int dem[ATOMICLENGTH] = {0};
+        dem[i % 3] = 1;
+        TaskPoint[i].setInitialValue(i, BeginInitial[i], EndInitial[i], dem);
+        // TaskPoint[i].setInitialValue(i, BeginInitial[i], EndInitial[i]);
         TaskPoint[i].printTaskRepository();
     }
 
     // 定义机器人，一共6个
     crobot * Robot = new crobot[ROBOTNUM];
     assert(Robot != NULL);
-    // 设置机器人对象的初始化参数（编号，初始位置）
+    // 设置机器人对象的初始化参数（编号，初始位置，机器人能力向量）
     for (int i = 0; i < ROBOTNUM; i++) {
         Robot[i].setInitialValue(i, i, 1);
+        vector<int> cap(ATOMICLENGTH, 0);
+        cap[i % 3] = 1;
+        Robot[i].setRobotCapacity(cap);
         Robot[i].printRobotInfo();
     }
 
@@ -567,14 +578,16 @@ int main() {
             Robot[i].clearPropertity();
         }
 
-        // 发布新任务
-        for (int i = 0; i < TASKPOINT; i++) {
-            TaskList->getTask(TaskPoint[i], k);
-        }
         // join主线程
         for (auto iter = ThreadsRobot.begin(); iter != ThreadsRobot.end(); iter++) {
             iter->join();
         }
+
+        // 发布新任务
+        for (int i = 0; i < TASKPOINT; i++) {
+            TaskList->getTask(TaskPoint[i], k);
+        }
+
     }
     timestampstop = getTimeStamp();
 

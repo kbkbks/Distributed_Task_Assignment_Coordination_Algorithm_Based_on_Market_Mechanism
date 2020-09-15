@@ -6,7 +6,7 @@
 /*
  * 向任务发布点传递所有初始化参数
  */
-void ctaskpoint::setInitialValue(int pointnum, float bp[][2], float ep[][2]) {
+void ctaskpoint::setInitialValue(int pointnum, float bp[][2], float ep[][2], int dem[ATOMICLENGTH]) {
     for (int i = 0; i < TASKCAPACITY; i++) {
         TaskRepository[i].TaskNo = i;
         TaskRepository[i].PointNo = pointnum;
@@ -18,6 +18,7 @@ void ctaskpoint::setInitialValue(int pointnum, float bp[][2], float ep[][2]) {
         TaskRepository[i].TaskLoad = TASKLOAD;
         TaskRepository[i].TaskExeProgress = 0;
         TaskRepository[i].TaskExecutedFlag = 0;
+        memcpy(TaskRepository[i].TaskDem, dem, sizeof(int) * ATOMICLENGTH);
     }
 }
 

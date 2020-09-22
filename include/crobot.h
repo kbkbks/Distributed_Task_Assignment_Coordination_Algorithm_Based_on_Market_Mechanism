@@ -11,7 +11,7 @@ class crobot {
  public:
     crobot();
     ~crobot() {
-       cout << "robot析构" << endl;
+       // cout << "robot析构" << endl;
     }
 
     /*
@@ -291,6 +291,11 @@ class crobot {
      * 获取机器人能力向量
      */
     vector<int> getRobotCapacity();
+
+    /*
+     * 异构机器人任务匹配函数
+     */
+    bool matchTask(TaskTemplate * TmpTask);
 
  private:
     // 常规任务分配变量

@@ -28,14 +28,16 @@
 #define COORDINATE_LENGTH 3  // 协调长度
 #define TASKLOAD 2  // 任务负载（全局）
 #define ROBOT_RATE 1    // 机器人任务效率（全局）
+#define ATOMICLENGTH 3  // 原子能力数量
 #define RAND_TASKLOAD rand() % 5 + 1  // 任务负载（0~5的随机数）
 #define RAND_ROBOT_RATE rand() % 3 + 1  // 机器人任务执行效率（0~3的随机数）
 #define RAND_NUM rand() / static_cast<double>(RAND_MAX) / 10000  // 随机数， 0～0.01
+
 #define GENERAL_UTILITY 0   // 常规计算效用
 #define SINGLE_COORDINATE 0  // 单个机器人协调策略
 #define MULTIROBOT_COORDINATE 0  // 多机器人协调策略
 #define TASK_EXECUTION 1    // 任务执行计算效用（常规）
-#define ATOMICLENGTH 3  // 原子能力数量
+#define HETEROGENEOUSROBOT 1    // 异构机器人集群任务分配
 
 using namespace std;
 

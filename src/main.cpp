@@ -46,11 +46,13 @@
  * -------------------------------------------------------------------------------------------------------------------------
  * 2020-09-15 创建HeterogeneousRobot分支，用于设计并实现异构机器人集群任务分配。
  *      修改ctaskpoint.h，补充析构函数。需合并至master分支。
- *      修改ctasklist.h和ctasklist.cpp中getTask函数，参数改为引用传递，防止临时变量销毁导致的TaskPoint对象中new出来的TaskRepositor销毁。
- * 后续可以增加TaskPoint类的拷贝构造函数，用于深拷贝。需合并至master分支。
- *      修改TaskTemplate，该结构体也发生多次拷贝和析构，导致结构体内不能放容器（会有运行时内存分配错误），后续需要修改类中拷贝构造或者
- * 修改调用时参数传递方式。需合并至master分支。
+ *      修改ctasklist.h和ctasklist.cpp中getTask函数，参数改为引用传递，防止临时变量销毁导致的TaskPoint对象中new出来的
+ * TaskRepositor销毁。后续可以增加TaskPoint类的拷贝构造函数，用于深拷贝。需合并至master分支。
+ *      修改TaskTemplate，该结构体也发生多次拷贝和析构，导致结构体内不能放容器（会有运行时内存分配错误），后续需要修改类中
+ * 拷贝构造或者修改调用时参数传递方式。需合并至master分支。
  *      针对每个机器人和任务都只对应一种原子能力的情况，当前可基本实现异构机器人分配。
+ * -------------------------------------------------------------------------------------------------------------------------
+ * 2020-09-22 封装异构机器人任务匹配函数，将crobot::calculateValue中原先异构机器人任务匹配函数部分代码封装入matchRobot。
  */
 
 #include "define.h"
@@ -587,7 +589,6 @@ int main() {
         for (int i = 0; i < TASKPOINT; i++) {
             TaskList->getTask(TaskPoint[i], k);
         }
-
     }
     timestampstop = getTimeStamp();
 

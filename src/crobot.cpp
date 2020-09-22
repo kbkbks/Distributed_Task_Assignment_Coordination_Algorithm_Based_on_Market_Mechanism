@@ -140,16 +140,13 @@ void crobot::calculateValue(ctasklist * tasklist, int i) {
     TaskTemplate * TmpTask;   // 待计算价值的任务
     TmpTask = tasklist->sendTaskQueue(i);   // 取任务列表中的第i个任务，别名为TmpTask
 
-    /**
-     * 异构机器人任务匹配
-     */
-    for (int k = 0; k < ATOMICLENGTH; ++k) {
-        if (this->RobotCap[k] < TmpTask->TaskDem[k]) {
-            ValueList.push_back(0);
-            printValueList(k);
-            return;
-        }
+#if HETEROGENEOUSROBOT
+    // 异构机器人任务匹配
+    if (matchTask(TmpTask)) {
+        printValueList(i);
+        return;
     }
+#endif
 
 #if GENERAL_UTILITY
     // 常规直接计算任务价值
@@ -2139,4 +2136,16 @@ void crobot::setRobotCapacity(vector<int> cap) {
  */
 vector<int> crobot::getRobotCapacity() {
     return this->RobotCap;
+}
+
+/*
+ * 异构机器人任务匹配函数
+ */
+bool crobot::matchTask(TaskTemplate * TmpTask) {
+    for (int k = 0; k < ATOMICLENGTH; ++k) {
+        if (this->RobotCap[k] < TmpTask->TaskDem[k]) {
+            ValueList.push_back(0);
+            return true;
+        }
+    }
 }

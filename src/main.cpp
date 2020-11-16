@@ -372,10 +372,92 @@ void printMinSum(crobot * Robot) {
     cout << "所有机器人任务执行队列执行距离总和为：" << " " << TotalTaskExecutionQueueDisSum << endl;
 }
 
+/*
+ * 记录任务分配相关信息至csv 
+ */
+void writeToCSV(crobot * Robot, ctasklist * tasklist) {
+    float TotalTaskExecutionQueueValueSum = 0;  // 所有机器人价值总和
+    float TotalTaskExecutionQueueDisSum = 0;    // 所有机器人TEQ执行距离总和
+    for (int i = 0; i < ROBOTNUM; i++) {
+        float TotalTaskExecutionQueueValue = 0;
+        float TotalTaskExecutionQueueDistance = 0;
+        TotalTaskExecutionQueueValue = Robot[i].sendTaskExecutionQueueValue();
+        TotalTaskExecutionQueueDistance = Robot[i].sendTEQDistance();
+        TotalTaskExecutionQueueValueSum += TotalTaskExecutionQueueValue;
+        TotalTaskExecutionQueueDisSum += TotalTaskExecutionQueueDistance;
+    }
+
+    ofstream opt;
+    opt.open("bin/test.csv", ios::out | ios::app);
+    if (!opt) {
+        cout << "打开文件失败！" << "bin/test.csv"<< endl;
+        exit(1);    // 失败退回操作系统
+    }
+
+    opt << TotalTaskExecutionQueueDisSum << "," << TotalTaskExecutionQueueValueSum << ",";
+    for (int i = 0; i < ROBOTNUM - 1; i++) {
+        opt << Robot[i].sendRobotNum() << ","
+         << Robot[i].sendTEQDistance() << ","
+         << Robot[i].sendTaskExecutionQueueValue() << ","
+         << tasklist->sendTaskQueue(Robot[i].sendAssignedTask())->PointNo << ","
+         << tasklist->sendTaskQueue(Robot[i].sendAssignedTask())->TaskNo;
+    }
+    opt << Robot[ROBOTNUM - 1].sendRobotNum() << ","
+        << Robot[ROBOTNUM - 1].sendTEQDistance() << ","
+        << Robot[ROBOTNUM - 1].sendTaskExecutionQueueValue() << ","
+        << tasklist->sendTaskQueue(Robot[ROBOTNUM - 1].sendAssignedTask())->PointNo << ","
+        << tasklist->sendTaskQueue(Robot[ROBOTNUM - 1].sendAssignedTask())->TaskNo
+        << endl;
+    opt.close();
+}
+
+/*
+ * 记录程序运行时间
+ */
+void CSV_time(time_t runtime) {
+    ofstream opt;
+    opt.open("bin/test.csv", ios::out | ios::app);
+    if (!opt) {
+        cout << "打开文件失败！" << "bin/test.csv"<< endl;
+        exit(1);    // 失败退回操作系统
+    }
+    opt << "程序运行时间" << endl;
+    opt << runtime << endl;
+
+    opt.close();
+}
+
+/*
+ * 记录程序参数
+ */
+void CSV_initial() {
+    ofstream opt;
+    opt.open("bin/test.csv", ios::out | ios::app);
+    if (!opt) {
+        cout << "打开文件失败！" << "bin/test.csv"<< endl;
+        exit(1);    // 失败退回操作系统
+    }
+    opt << "机器人数量" << "," << "任务点数量" << "," << "任务点任务容量" << "," << "eps" << ","
+     << "协调长度" << "," << "单个机器人协调策略" << "," << "多机器人协调策略" << endl;
+    opt << ROBOTNUM << "," << TASKPOINT << "," << TASKCAPACITY << "," << EPS << ","
+     << COORDINATE_LENGTH << "," <<  SINGLE_COORDINATE << "," << MULTIROBOT_COORDINATE << endl;
+
+    opt << "所有机器人TEQ总距离" << "," <<" 所有机器人TEQ总效用" << ","
+    << "机器人0编号" << "机器人0TEQ距离" << "," << "机器人0TEQ效用" << "," << "机器人0分配任务点编号" << "," << "机器人0分配任务编号" << ","
+    << "机器人1编号" << "机器人1TEQ距离" << "," << "机器人1TEQ效用" << "," << "机器人1分配任务点编号" << "," << "机器人1分配任务编号" << ","
+    << "机器人2编号" << "机器人2TEQ距离" << "," << "机器人2TEQ效用" << "," << "机器人2分配任务点编号" << "," << "机器人2分配任务编号" << ","
+    << "机器人3编号" << "机器人3TEQ距离" << "," << "机器人3TEQ效用" << "," << "机器人3分配任务点编号" << "," << "机器人3分配任务编号" << ","
+    << "机器人4编号" << "机器人4TEQ距离" << "," << "机器人4TEQ效用" << "," << "机器人4分配任务点编号" << "," << "机器人4分配任务编号" << ","
+    << "机器人5编号" << "机器人5TEQ距离" << "," << "机器人5TEQ效用" << "," << "机器人5分配任务点编号" << "," << "机器人5分配任务编号" << endl;
+
+    opt.close();
+}
+
 int main() {
     // 时间戳
     std::time_t timestampstart;
     std::time_t timestampstop;
+    CSV_initial();  // 记录程序参数
 
     cout << "****************************" << endl;
     cout << "分布式任务处理与竞拍机制算法" << endl;
@@ -466,6 +548,7 @@ int main() {
             printAllocationResult(Robot, TaskList);
             // 打印所有机器人任务执行队列的总价值
             printMinSum(Robot);  // minSum目标
+            writeToCSV(Robot, TaskList);
             cout << "**********************************************************************" << endl;
         } else {
             cout << "***********************机器人分配情况不一致！*************************" << endl;
@@ -503,6 +586,7 @@ int main() {
     cout << "程序运行所需时间：" << timestampstop - timestampstart << endl;
     cout << "****************************" << endl;
     cout << endl;
+    CSV_time(timestampstop - timestampstart);   // 记录程序运行时间
 
     delete TaskList;
     delete[] Robot;

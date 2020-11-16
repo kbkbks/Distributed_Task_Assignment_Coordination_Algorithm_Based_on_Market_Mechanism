@@ -52,7 +52,7 @@ void crobot::generateValueList(ctasklist * tasklist, int tasklist_num, float ran
 
     // 局部变量赋值
     vector<float> PriceOld;  // 旧价格
-    eps = 0.01 + rand_num;   // 松弛变量，加上随机数，每个机器人不同
+    eps = EPS + rand_num;   // 松弛变量，加上随机数，每个机器人不同
     bool flag = false;
     AssignedTask = -1;
 
@@ -141,7 +141,7 @@ void crobot::calculateValue(ctasklist * tasklist, int i) {
     // 常规直接计算任务价值
     // GeneralCalculate(TmpTask);
     NewGeneralCalculate(TmpTask);
-    printValueList(i);
+    // printValueList(i);
 #endif
 
 #if SINGLE_COORDINATE
@@ -2031,4 +2031,11 @@ float crobot::sendTEQDistance() {
     }
 
     return Distance;
+}
+
+/*
+ * 返回机器人竞标的任务
+ */
+int crobot::sendAssignedTask() {
+    return AssignedTask;
 }

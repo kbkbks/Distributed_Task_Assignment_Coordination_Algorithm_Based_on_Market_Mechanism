@@ -18,11 +18,13 @@
 #include <algorithm>
 #include <mutex>
 #include <iostream>
+#include <fstream>
 #include <unordered_map>
 
 #define ROBOTNUM 6  // 机器人数量
 #define TASKPOINT 4  // 任务点数量
 #define TASKCAPACITY 5  // 任务点任务容量
+#define EPS 0.0001    // 松弛变量
 #define COORDINATE_LENGTH 3  // 协调长度
 #define TASKLOAD 2  // 任务负载（全局）
 #define ROBOT_RATE 1    // 机器人任务效率（全局）

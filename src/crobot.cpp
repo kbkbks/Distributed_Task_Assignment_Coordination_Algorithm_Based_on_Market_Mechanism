@@ -144,7 +144,7 @@ void crobot::calculateValue(ctasklist * tasklist, int i) {
     // 常规直接计算任务价值
     // GeneralCalculate(TmpTask);
     NewGeneralCalculate(TmpTask);
-    printValueList(i);
+    // printValueList(i);
 #endif
 
 #if SINGLE_COORDINATE

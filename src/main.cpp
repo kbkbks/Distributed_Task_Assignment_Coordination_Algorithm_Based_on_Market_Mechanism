@@ -521,9 +521,9 @@ void CSV_initial() {
         exit(1);    // 失败退回操作系统
     }
     opt << "机器人数量" << "," << "任务点数量" << "," << "任务点任务容量" << "," << "eps" << ","
-     << "协调长度" << "," << "单个机器人协调策略" << "," << "多机器人协调策略" << "," << "任务执行计算效用（常规）" << endl;
+     << "协调长度" << "," << "常规计算效用" << "," << "单个机器人协调策略" << "," << "多机器人协调策略" << "," << "任务执行计算效用（常规）" << endl;
     opt << ROBOTNUM << "," << TASKPOINT << "," << TASKCAPACITY << "," << EPS << ","
-     << COORDINATE_LENGTH << "," <<  SINGLE_COORDINATE << "," << MULTIROBOT_COORDINATE << "," << TASK_EXECUTION <<endl;
+     << COORDINATE_LENGTH << "," << GENERAL_UTILITY << "," << SINGLE_COORDINATE << "," << MULTIROBOT_COORDINATE << "," << TASK_EXECUTION <<endl;
 
     opt << "所有机器人TEQ总距离" << "," <<" 所有机器人TEQ总效用" << "," << "最大机器人任务执行距离" << "," << "最大任务执行距离机器人编号" << ","
     << "机器人0编号" << ","<< "机器人0TEQ距离" << "," << "机器人0TEQ效用" << "," << "机器人0分配任务点编号" << "," << "机器人0分配任务编号" << ","

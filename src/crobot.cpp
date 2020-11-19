@@ -15,6 +15,7 @@ void readTaskExecutionQueue(crobot * Robot);
 crobot::crobot():AllRobotPrice(ROBOTNUM), AllRobotBidder(ROBOTNUM), TaskExecutionQueueNum(0), CoorCommunicateLength(0), CoorCommunicateTime(0) {
     CoorCommunicateWidth = 2;
     maxValuePosition = -1;
+    minDistancePos = -1;
     // Rate = RAND_ROBOT_RATE;
     Rate = ROBOT_RATE;
 }
@@ -96,7 +97,8 @@ void crobot::generateValueList(ctasklist * tasklist, int tasklist_num, float ran
     }
 
     // 将中标的任务存入机器人任务执行队列
-    savetoTaskExecutionQueue(tasklist);
+    // savetoTaskExecutionQueue(tasklist);  // 已失效
+    NewsavetoTaskExecutionQueue(tasklist);
     TaskExecutionQueueNum = TaskExecutionQueue.size();
 
 #if MULTIROBOT_COORDINATE
@@ -149,7 +151,8 @@ void crobot::calculateValue(ctasklist * tasklist, int i) {
 
 #if SINGLE_COORDINATE
     // 寻找使插入新任务后整体任务执行队列价值最高的插入点(机器人自协调)
-    SelfCoordination(TmpTask);
+    // SelfCoordination(TmpTask);   // 已失效
+    NewSelfCoordination(TmpTask);
 #endif
 
 #if TASK_EXECUTION
@@ -206,9 +209,10 @@ void crobot::NewGeneralCalculate(TaskTemplate * TmpTask) {
 }
 
 /*
+ * @deprecated 该函数已失效，改用NewSelfCoordination
  * 寻找使插入新任务后整体任务执行队列价值最高的插入点(机器人自协调)
  */
-void crobot::SelfCoordination(TaskTemplate * TmpTask) {
+[[deprecated]] void crobot::SelfCoordination(TaskTemplate * TmpTask) {
     float DiffPositionAllValue = 0;  // 不同位置上的任务总价值
     vector<float> DiffPositionNetValue;  // 不同位置上的新任务净价值
     maxValue = 0;
@@ -234,9 +238,39 @@ void crobot::SelfCoordination(TaskTemplate * TmpTask) {
 }
 
 /*
+ * 新寻找使插入新任务后整体任务执行队列价值最高的插入点(机器人自协调)
+ */
+void crobot::NewSelfCoordination(TaskTemplate * TmpTask) {
+    float DiffPositionAllDis = 0;   // 不同位置上的任务总距离
+    vector<float> DiffPositionIncDis;   // 不同位置上的新任务距离增量
+    minDistance = 0;    // 距离增量最小值
+    minDistancePos = -1;   // 距离增量最小任务的下标
+
+    if (TaskExecutionQueueNum != 0) {
+        // 如果任务执行队列的任务数量非0
+        for (int i = 0; i < TaskExecutionQueueNum + 1; i++) {
+            DiffPositionAllDis = calculateTmpTaskExecutionQueueDis(TmpTask, i);
+            DiffPositionIncDis.push_back(DiffPositionAllDis - sendTEQDistance());
+        }
+    } else {
+        // 如果任务执行队列的任务数量为0
+        DiffPositionAllDis = calculateTmpTaskExecutionQueueDis(TmpTask, 0);
+        DiffPositionIncDis.push_back(DiffPositionAllDis);
+    }
+
+    // 选择距离增量最小值以及对应的下标（位置）
+    minDistance = *min_element(DiffPositionIncDis.begin(), DiffPositionIncDis.end());
+    // 下标表示，新竞标的任务安插在第i个任务之后（下标为0表示，新竞标的任务安插在头位置）
+    minDistancePos = min_element(DiffPositionIncDis.begin(), DiffPositionIncDis.end()) - DiffPositionIncDis.begin();
+
+    ValueList.push_back(1 / minDistance);
+}
+
+/*
+ * @deprecated 该函数已失效，改为calculateTmpTaskExecutionQueueDis
  * 计算临时任务执行队列总价值（计算新任务插入执行队列某位置后，新队列的总价值）
  */
-float crobot::calculateTmpTaskExecutionQueueValue(TaskTemplate * TmpTask, int position) {
+[[deprecated]] float crobot::calculateTmpTaskExecutionQueueValue(TaskTemplate * TmpTask, int position) {
     vector<TaskTemplate> TmpTaskExecutionQueue = TaskExecutionQueue;    // 定义临时任务执行队列
     TmpTaskExecutionQueue.insert(TmpTaskExecutionQueue.begin() + position, *TmpTask);    // 新任务插入临时任务执行队列
     float TmpTaskExecutionQueueNum;
@@ -257,6 +291,31 @@ float crobot::calculateTmpTaskExecutionQueueValue(TaskTemplate * TmpTask, int po
     }
 
     return tmpValue;
+}
+
+/*
+ * 计算临时任务执行队列总距离（计算新任务插入执行队列某位置后，新队列的总距离）
+ */
+float crobot::calculateTmpTaskExecutionQueueDis(TaskTemplate * TmpTask, int position) {
+    vector<TaskTemplate> TmpTaskExecutionQueue = TaskExecutionQueue;    // 定义临时任务执行队列
+    TmpTaskExecutionQueue.insert(TmpTaskExecutionQueue.begin() + position, *TmpTask);    // 新任务插入临时任务执行队列
+    float TmpTaskExecutionQueueNum;
+    float tmpDistance = 0;
+    float Distance = 0;
+    TmpTaskExecutionQueueNum = TmpTaskExecutionQueue.size();
+    Distance = sqrt(pow(TmpTaskExecutionQueue[0].BeginPoint[0] - RobotLocation[0], 2) +
+        pow(TmpTaskExecutionQueue[0].BeginPoint[1] - RobotLocation[1], 2)) +
+        sqrt(pow(TmpTaskExecutionQueue[0].EndPoint[0] - TmpTaskExecutionQueue[0].BeginPoint[0], 2) +
+        pow(TmpTaskExecutionQueue[0].EndPoint[1] - TmpTaskExecutionQueue[0].BeginPoint[1], 2));
+    for (int i = 1; i < TmpTaskExecutionQueueNum; i++) {
+        tmpDistance = sqrt(pow(TmpTaskExecutionQueue[i].BeginPoint[0] - TmpTaskExecutionQueue[i - 1].EndPoint[0], 2) +
+            pow(TmpTaskExecutionQueue[i].BeginPoint[1] - TmpTaskExecutionQueue[i - 1].EndPoint[1], 2)) +
+            sqrt(pow(TmpTaskExecutionQueue[i].EndPoint[0] - TmpTaskExecutionQueue[i].BeginPoint[0], 2) +
+            pow(TmpTaskExecutionQueue[i].EndPoint[1] - TmpTaskExecutionQueue[i].BeginPoint[1], 2));
+        Distance += tmpDistance;    // 累积距离
+    }
+
+    return Distance;
 }
 
 /*
@@ -1681,9 +1740,10 @@ void crobot::convergence(bool &flag) {
 }
 
 /*
+ * @deprecated maxValuePosition已失效
  * 将中标的任务存入机器人任务执行队列
  */
-void crobot::savetoTaskExecutionQueue(ctasklist * tasklist) {
+[[deprecated]] void crobot::savetoTaskExecutionQueue(ctasklist * tasklist) {
     /*
      * @repair
      * 尝试修复机器人数大于任务数异常bug
@@ -1692,6 +1752,20 @@ void crobot::savetoTaskExecutionQueue(ctasklist * tasklist) {
         TaskTemplate * tmp = tasklist->sendTaskQueue(AssignedTask);
         if (maxValuePosition != -1) {
             TaskExecutionQueue.insert(TaskExecutionQueue.begin() + maxValuePosition, *tmp);
+        } else {
+            TaskExecutionQueue.push_back(*tmp);
+        }
+    }
+}
+
+/*
+ * 新将中标的任务存入机器人任务执行队列
+ */
+void crobot::NewsavetoTaskExecutionQueue(ctasklist * tasklist) {
+    if (AssignedTask != -1) {
+        TaskTemplate * tmp = tasklist->sendTaskQueue(AssignedTask);
+        if (minDistancePos != -1) {
+            TaskExecutionQueue.insert(TaskExecutionQueue.begin() + minDistancePos, *tmp);
         } else {
             TaskExecutionQueue.push_back(*tmp);
         }

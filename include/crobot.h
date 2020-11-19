@@ -53,10 +53,21 @@ class crobot {
      */
     void SelfCoordination(TaskTemplate * TmpTask);
 
+
+    /*
+     * 新寻找使插入新任务后整体任务执行队列价值最高的插入点(机器人自协调)
+     */
+    void NewSelfCoordination(TaskTemplate * TmpTask);
+
     /*
      * 计算临时任务执行队列总价值（计算新任务插入执行队列某位置后，新队列的总价值）
      */
     float calculateTmpTaskExecutionQueueValue(TaskTemplate * TmpTask, int position);
+
+    /*
+     * 计算临时任务执行队列总距离（计算新任务插入执行队列某位置后，新队列的总距离）
+     */
+    float calculateTmpTaskExecutionQueueDis(TaskTemplate * TmpTask, int position);
 
     /*
      * 发送任务执行队列总价值
@@ -169,6 +180,11 @@ class crobot {
      * 将中标的任务存入机器人任务执行队列
      */
     void savetoTaskExecutionQueue(ctasklist * tasklist);
+
+    /*
+     * 新将中标的任务存入机器人任务执行队列
+     */
+    void NewsavetoTaskExecutionQueue(ctasklist * tasklist);
 
     /*
      * 打印分配的任务
@@ -305,6 +321,8 @@ class crobot {
     int TaskExecutionQueueNum;  // 任务执行队列中任务数量
     float maxValue;  // 价值最大的任务
     int maxValuePosition;   // 价值最大的下标
+    float minDistance;  // 距离增量最小的任务
+    int minDistancePos;    // 距离增量最小任务的下标
 
     //多机器人任务协调变量
     int CoorCommunicateLength;  // 协调通信长度

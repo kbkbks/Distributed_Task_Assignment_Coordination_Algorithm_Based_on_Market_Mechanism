@@ -20,11 +20,13 @@
 #include <algorithm>
 #include <mutex>
 #include <iostream>
+#include <fstream>
 #include <unordered_map>
 
 #define ROBOTNUM 6  // 机器人数量
 #define TASKPOINT 8  // 任务点数量
 #define TASKCAPACITY 5  // 任务点任务容量
+#define EPS 0.0001    // 松弛变量
 #define COORDINATE_LENGTH 3  // 协调长度
 #define TASKLOAD 2  // 任务负载（全局）
 #define ROBOT_RATE 1    // 机器人任务效率（全局）
@@ -33,11 +35,11 @@
 #define RAND_ROBOT_RATE rand() % 3 + 1  // 机器人任务执行效率（0~3的随机数）
 #define RAND_NUM rand() / static_cast<double>(RAND_MAX) / 10000  // 随机数， 0～0.01
 
-#define GENERAL_UTILITY 0   // 常规计算效用
+#define GENERAL_UTILITY 1   // 常规计算效用
 #define SINGLE_COORDINATE 0  // 单个机器人协调策略
 #define MULTIROBOT_COORDINATE 0  // 多机器人协调策略
-#define TASK_EXECUTION 1    // 任务执行计算效用（常规）
-#define HETEROGENEOUSROBOT 1    // 异构机器人集群任务分配
+#define TASK_EXECUTION 0    // 任务执行计算效用（常规）
+#define HETEROGENEOUSROBOT 0    // 异构机器人集群任务分配
 
 using namespace std;
 

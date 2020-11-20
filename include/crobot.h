@@ -297,6 +297,11 @@ class crobot {
      */
     bool matchTask(TaskTemplate * TmpTask);
 
+    /*
+     * 返回机器人竞标的任务
+     */
+    int sendAssignedTask();
+
  private:
     // 常规任务分配变量
     float RobotLocation[2];  // 机器人位置

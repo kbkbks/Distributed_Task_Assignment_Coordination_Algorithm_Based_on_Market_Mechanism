@@ -2167,6 +2167,34 @@ vector<float> crobot::sendValueList() {
 /**
  * 设置竞拍任务
  */
-int crobot::setAssignedTask(int i) {
-    return AssignedTask = i;
+void crobot::setAssignedTask(int i) {
+    AssignedTask = i;
+}
+
+/**
+ * 设置剩余任务集
+ */
+void crobot::setResidualTask(vector<int> residual) {
+    ResidualTask = residual;
+}
+
+/**
+ * 设置剩余任务数量
+ */
+void crobot::setResidualNum(int residual_num) {
+    ResidualNum = residual_num;
+}
+
+/**
+ * 设置任务执行队列中任务数量
+ */
+void crobot::setTaskExecutionQueueNum(int TEQ_num) {
+    TaskExecutionQueueNum = TEQ_num;
+}
+
+/**
+ * 发送任务执行队列中任务数量
+ */
+int crobot::sendTaskExecutionQueueNum() {
+    return TaskExecutionQueue.size();
 }

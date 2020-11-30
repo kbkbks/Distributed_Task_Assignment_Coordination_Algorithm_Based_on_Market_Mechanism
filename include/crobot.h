@@ -315,7 +315,27 @@ class crobot {
     /**
      * 设置竞拍任务
      */
-    int setAssignedTask(int i);
+    void setAssignedTask(int i);
+
+    /**
+     * 设置剩余任务集
+     */
+    void setResidualTask(vector<int> residual);
+
+    /**
+     * 设置剩余任务数量
+     */
+    void setResidualNum(int residual_num);
+
+    /**
+     * 设置任务执行队列中任务数量
+     */
+    void setTaskExecutionQueueNum(int TEQ_num);
+
+    /**
+     * 发送任务执行队列中任务数量
+     */
+    int sendTaskExecutionQueueNum();
 
  private:
     // 常规任务分配变量

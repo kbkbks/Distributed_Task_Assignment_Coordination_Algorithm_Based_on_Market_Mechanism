@@ -55,6 +55,8 @@
  * 2020-09-22 封装异构机器人任务匹配函数，将crobot::calculateValue中原先异构机器人任务匹配函数部分代码封装入matchRobot。
  * -------------------------------------------------------------------------------------------------------------------------
  * 2020-11-30 创建GreedyAlgorithm分支，用于设计参考文献中的比较算法（贪婪）。
+ *      贪婪算法暂时使用集中式仿真，效果基本一致，分布式实现会多一个ValueList通信过程。
+ *      分布式竞拍算法加入开关DISTRIBUTED，集中式贪婪算法加入开关CENTRALIZED。
  */
 
 #include "define.h"
@@ -703,8 +705,32 @@ int main() {
             task_set[task] = 1;
             robot_set[bidden] = 1;
             Robot[bidden].setAssignedTask(task);
-            
         }
+        // 整理剩余任务
+        vector<int> residual;
+        for (int i = 0; i < TaskListNum; ++i) {
+            if (task_set[i] == -1) {
+                // 如果任务未被分配
+                residual.push_back(i);
+            }
+        }
+        Robot[0].setResidualTask(residual);
+        Robot[0].setResidualNum(residual.size());
+
+        // 将机器人分配所得任务存入TEQ
+        for (int i = 0; i < ROBOTNUM; ++i) {
+            Robot[i].savetoTaskExecutionQueue(TaskList);
+            int TEQ_num = Robot[i].sendTaskExecutionQueueNum();
+            Robot[i].setTaskExecutionQueueNum(TEQ_num);
+        }
+
+        // 打印分配情况
+        printAllocationResult(Robot, TaskList);
+        // 打印所有机器人任务执行队列的总价值
+        printMinSum(Robot);  // MinSum目标
+        // 打印最大的机器人任务执行队列距离
+        printMinMax(Robot);  // MinMax目标
+        writeToCSV(Robot, TaskList);
 #endif
 
         // 机器人执行任务

@@ -302,6 +302,21 @@ class crobot {
      */
     int sendAssignedTask();
 
+
+/**
+ * 集中式分配方法
+ */
+
+    /*
+     * 返回机器人任务价值列表
+     */
+    vector<float> sendValueList();
+
+    /**
+     * 设置竞拍任务
+     */
+    int setAssignedTask(int i);
+
  private:
     // 常规任务分配变量
     float RobotLocation[2];  // 机器人位置

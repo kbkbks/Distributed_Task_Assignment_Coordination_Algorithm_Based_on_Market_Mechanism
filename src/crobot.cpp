@@ -2156,3 +2156,17 @@ bool crobot::matchTask(TaskTemplate * TmpTask) {
 int crobot::sendAssignedTask() {
     return AssignedTask;
 }
+
+/*
+ * 返回机器人任务价值列表
+ */
+vector<float> crobot::sendValueList() {
+    return ValueList;
+}
+
+/**
+ * 设置竞拍任务
+ */
+int crobot::setAssignedTask(int i) {
+    return AssignedTask = i;
+}

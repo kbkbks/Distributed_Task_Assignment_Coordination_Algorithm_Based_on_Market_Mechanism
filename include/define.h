@@ -41,6 +41,9 @@
 #define TASK_EXECUTION 0    // 任务执行计算效用（常规）
 #define HETEROGENEOUSROBOT 0    // 异构机器人集群任务分配
 
+#define DISTRIBUTED 0   // 分布式算法
+#define CENTRALIZED 1  // 集中式算法
+
 using namespace std;
 
 /*

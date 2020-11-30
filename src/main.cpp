@@ -615,6 +615,10 @@ int main() {
         TaskListNum = TaskList->sendTaskNumber();
         cout << "主线程ID：" << this_thread::get_id() << endl;
 
+/**
+ * 分布式任务任务分配竞拍算法
+ */
+#if DISTRIBUTED
         //全局变量赋初值
         setGlobalInitialValue(TaskListNum);
 
@@ -661,6 +665,48 @@ int main() {
             cout << "***********************机器人分配情况不一致！*************************" << endl;
         }
 
+        // join主线程
+        for (auto iter = ThreadsRobot.begin(); iter != ThreadsRobot.end(); iter++) {
+            iter->join();
+        }
+#endif
+
+/**
+ * 集中式任务分配贪婪算法
+ */
+#if CENTRALIZED
+        // 计算所有机器人ValueList
+        vector<vector<float>> AllValue;     // 所有机器人任务价值
+        for (int i = 0; i < ROBOTNUM; ++i) {
+            for (int j = 0; j < TaskListNum; ++j) {
+                Robot[i].NewGeneralCalculate(TaskList->sendTaskQueue(j));
+            }
+            AllValue.push_back(Robot[i].sendValueList());
+        }
+
+        // 任务分配
+        vector<int> task_set(TaskListNum, -1);
+        vector<int> robot_set(ROBOTNUM, -1);
+        for (int round = 0; round < ROBOTNUM; ++round) {
+            float maxValue = 0;
+            int task = -1;
+            int bidden = -1;
+            for (int i = 0; i < ROBOTNUM; ++i) {
+                for (int j = 0; j < TaskListNum; ++j) {
+                    if (robot_set[i] == -1 && task_set[j] == -1 && maxValue < AllValue[i][j]) {
+                        maxValue = AllValue[i][j];
+                        task = j;
+                        bidden = i;
+                    }
+                }
+            }
+            task_set[task] = 1;
+            robot_set[bidden] = 1;
+            Robot[bidden].setAssignedTask(task);
+            
+        }
+#endif
+
         // 机器人执行任务
         robotExecuteTask(Robot);
 
@@ -678,11 +724,6 @@ int main() {
         // 重置机器人
         for (int i = 0; i < ROBOTNUM; i++) {
             Robot[i].clearPropertity();
-        }
-
-        // join主线程
-        for (auto iter = ThreadsRobot.begin(); iter != ThreadsRobot.end(); iter++) {
-            iter->join();
         }
 
         // 发布新任务

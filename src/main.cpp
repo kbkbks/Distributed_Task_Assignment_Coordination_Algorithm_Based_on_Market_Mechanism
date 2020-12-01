@@ -54,9 +54,10 @@
  * -------------------------------------------------------------------------------------------------------------------------
  * 2020-09-22 封装异构机器人任务匹配函数，将crobot::calculateValue中原先异构机器人任务匹配函数部分代码封装入matchRobot。
  * -------------------------------------------------------------------------------------------------------------------------
- * 2020-11-30 创建GreedyAlgorithm分支，用于设计参考文献中的比较算法（贪婪）。
+ * 2020-11-30 创建GreedyAlgorithm分支，用于设计参考文献中的比较算法（贪婪），当前该贪婪算法即为SSIA算法。
  *      贪婪算法暂时使用集中式仿真，效果基本一致，分布式实现会多一个ValueList通信过程。
  *      分布式竞拍算法加入开关DISTRIBUTED，集中式贪婪算法加入开关CENTRALIZED。
+ *      集中式贪婪算法暂时利用Sleep()表示通信时长。
  */
 
 #include "define.h"
@@ -553,6 +554,16 @@ void CSV_initial() {
     opt.close();
 }
 
+/**
+ *  毫秒级 延时 
+ */
+void Sleep(int ms) {
+    struct timeval delay;
+    delay.tv_sec = 0;
+    delay.tv_usec = ms * 1000;      // 20 ms
+    select(0, NULL, NULL, NULL, &delay);
+}
+
 int main() {
     // 时间戳
     std::time_t timestampstart;
@@ -756,6 +767,7 @@ int main() {
         for (int i = 0; i < TASKPOINT; i++) {
             TaskList->getTask(TaskPoint[i], k);
         }
+        Sleep(4);
     }
     timestampstop = getTimeStamp();
 
